@@ -1,0 +1,26 @@
+.features-split {
+  .section-inner {
+    padding-top: $features-split--padding-t__mobile;
+    padding-bottom: $features-split--padding-b__mobile;
+  }
+
+  .section-header {
+    padding-bottom: $features-split-header--padding__mobile;
+  }
+}
+
+@include media(">medium") {
+  .features-split {
+    /* background-image: url(https://c8.alamy.com/compit/2bh3yge/parete-di-fondo-astratta-con-pattern-cubico-parametrico-2bh3yge.jpg);
+    background-repeat: no-repeat;
+    background-size: 150%; */
+    .section-inner {
+      padding-top: $features-split--padding-t__desktop;
+      padding-bottom: $features-split--padding-b__desktop;
+    }
+
+    .section-header {
+      padding-bottom: $features-split-header--padding__desktop;
+    }
+  }
+}
