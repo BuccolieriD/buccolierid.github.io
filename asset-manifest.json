@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.ad1a5810.css",
-    "main.js": "/static/js/main.c8ed63a2.js",
+    "main.css": "/static/css/main.59662f18.css",
+    "main.js": "/static/js/main.fe559f11.js",
     "static/js/787.0ed8e518.chunk.js": "/static/js/787.0ed8e518.chunk.js",
     "static/media/ytback.png": "/static/media/ytback.9558d80affc683393533.png",
     "static/media/esg1.jpg": "/static/media/esg1.d5ac0188c344a2be2484.jpg",
@@ -14,12 +14,12 @@
     "static/media/new2background.jpg": "/static/media/new2background.b95f1d6a1adc8c4fdea3.jpg",
     "static/media/iceberg.jpg": "/static/media/iceberg.09068b1fb44fa0f09d39.jpg",
     "static/media/backgroun2.jpg": "/static/media/backgroun2.9d0f6727d2b35c233340.jpg",
+    "static/media/sfondocontatti.jpg": "/static/media/sfondocontatti.9d0f6727d2b35c233340.jpg",
     "static/media/team.jpg": "/static/media/team.ebedb8873fd02bdc73e6.jpg",
     "static/media/luxury1.jpg": "/static/media/luxury1.1f29aa849c65c135ab73.jpg",
     "static/media/tecimage.jpg": "/static/media/tecimage.af3ed1cbcb017052f347.jpg",
     "static/media/finacialservices.jpg": "/static/media/finacialservices.94b9bf338e1b58196760.jpg",
     "static/media/consulting1.jpg": "/static/media/consulting1.f74d7b393bfb23daf224.jpg",
-    "static/media/sfondocontatti.jpg": "/static/media/sfondocontatti.49cf5744a4552bd99ff1.jpg",
     "static/media/card.jpg": "/static/media/card.7843007ee49144df498e.jpg",
     "static/media/introteam.jpg": "/static/media/introteam.88b25d7fa334c07515cc.jpg",
     "static/media/imgsection1.jpg": "/static/media/imgsection1.22e8bd1e41fe30c5989a.jpg",
@@ -31,12 +31,12 @@
     "static/media/logoB.png": "/static/media/logoB.307e6faf08058f862fdd.png",
     "static/media/logonew.png": "/static/media/logonew.400293f328d3d08e18f8.png",
     "index.html": "/index.html",
-    "main.ad1a5810.css.map": "/static/css/main.ad1a5810.css.map",
-    "main.c8ed63a2.js.map": "/static/js/main.c8ed63a2.js.map",
+    "main.59662f18.css.map": "/static/css/main.59662f18.css.map",
+    "main.fe559f11.js.map": "/static/js/main.fe559f11.js.map",
     "787.0ed8e518.chunk.js.map": "/static/js/787.0ed8e518.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.ad1a5810.css",
-    "static/js/main.c8ed63a2.js"
+    "static/css/main.59662f18.css",
+    "static/js/main.fe559f11.js"
   ]
 }
