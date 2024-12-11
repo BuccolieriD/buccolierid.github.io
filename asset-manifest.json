@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.077cf8be.css",
-    "main.js": "/static/js/main.0fc977b2.js",
+    "main.css": "/static/css/main.ac944361.css",
+    "main.js": "/static/js/main.9de52539.js",
     "static/js/787.18906184.chunk.js": "/static/js/787.18906184.chunk.js",
     "static/media/test2.gif": "/static/media/test2.a9b8b3f47335262852e4.gif",
     "static/media/test4.gif": "/static/media/test4.d369a225d71b78d3051b.gif",
@@ -15,7 +15,7 @@
     "static/media/esg1.jpg": "/static/media/esg1.d5ac0188c344a2be2484.jpg",
     "static/media/backgroun2.jpg": "/static/media/backgroun2.e8e36370e5989cc27c50.jpg",
     "static/media/consulting2.jpg": "/static/media/consulting2.344b6fdcf7ab371b22d0.jpg",
-    "static/media/luxury2.jpg": "/static/media/luxury2.8945bc11baeb9eaeef0d.jpg",
+    "static/media/sfondoservizi.jpg": "/static/media/sfondoservizi.6a37b4505ec2f537d83b.jpg",
     "static/media/sands.jpg": "/static/media/sands.f2c4376130feb0fac21c.jpg",
     "static/media/partnerback.jpg": "/static/media/partnerback.a4dfc6943f11cd4fef09.jpg",
     "static/media/esg2.jpg": "/static/media/esg2.72f61c87410d977f869c.jpg",
@@ -23,7 +23,6 @@
     "static/media/iceberg.jpg": "/static/media/iceberg.09068b1fb44fa0f09d39.jpg",
     "static/media/team.jpg": "/static/media/team.ebedb8873fd02bdc73e6.jpg",
     "static/media/iconadesign.jpg": "/static/media/iconadesign.e76c1b81b1f9ec4febbb.jpg",
-    "static/media/luxury1.jpg": "/static/media/luxury1.1f29aa849c65c135ab73.jpg",
     "static/media/sfondocontatti.jpg": "/static/media/sfondocontatti.b221ac8184012d8af421.jpg",
     "static/media/iconameccanica.jpg": "/static/media/iconameccanica.823845cef6d9d485b53f.jpg",
     "static/media/iconariparazione.jpg": "/static/media/iconariparazione.6d2efbd20a46fa3868c5.jpg",
@@ -44,12 +43,12 @@
     "static/media/imgsection5.jpg": "/static/media/imgsection5.b64b43468e43ff95e631.jpg",
     "static/media/logoB.png": "/static/media/logoB.307e6faf08058f862fdd.png",
     "index.html": "/index.html",
-    "main.077cf8be.css.map": "/static/css/main.077cf8be.css.map",
-    "main.0fc977b2.js.map": "/static/js/main.0fc977b2.js.map",
+    "main.ac944361.css.map": "/static/css/main.ac944361.css.map",
+    "main.9de52539.js.map": "/static/js/main.9de52539.js.map",
     "787.18906184.chunk.js.map": "/static/js/787.18906184.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.077cf8be.css",
-    "static/js/main.0fc977b2.js"
+    "static/css/main.ac944361.css",
+    "static/js/main.9de52539.js"
   ]
 }
