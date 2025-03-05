@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.0780cab1.css",
-    "main.js": "/static/js/main.b7eaa5b1.js",
+    "main.css": "/static/css/main.d4f64bc6.css",
+    "main.js": "/static/js/main.aafc0fcc.js",
     "static/js/787.16f5691b.chunk.js": "/static/js/787.16f5691b.chunk.js",
     "static/media/giardino4.jpg": "/static/media/giardino4.3588970da041b9e8003a.jpg",
     "static/media/arredo5.jpg": "/static/media/arredo5.7a0afb09b9afd0380049.jpg",
@@ -63,13 +63,12 @@
     "static/media/casa1.jpg": "/static/media/casa1.f51aeaa9fdcff046c799.jpg",
     "static/media/arredo2.jpg": "/static/media/arredo2.6f46d47ec6031383e242.jpg",
     "static/media/idea9.jpg": "/static/media/idea9.f2b5ff658828ed0d3a20.jpg",
+    "static/media/Telaio per moto.jpg": "/static/media/Telaio per moto.3dc5d5f9a65bd4af087f.jpg",
     "static/media/prova2.avif": "/static/media/prova2.db261991c3be571dcf22.avif",
-    "static/media/Telaio per moto.jpg": "/static/media/Telaio per moto.f4270638234eb17c9caa.jpg",
     "static/media/introteam.jpg": "/static/media/introteam.88b25d7fa334c07515cc.jpg",
     "static/media/casa3.jpg": "/static/media/casa3.78ec16fd845ff11c6b0f.jpg",
     "static/media/Forcella per moto.jpg": "/static/media/Forcella per moto.bc364915c2d31c71f286.jpg",
     "static/media/3.jpg": "/static/media/3.7e3b3eae6df0cd461a68.jpg",
-    "static/media/2.jpg": "/static/media/2.0b8b458626b5ae87360c.jpg",
     "static/media/imgsection1.jpg": "/static/media/imgsection1.22e8bd1e41fe30c5989a.jpg",
     "static/media/imgsection4.jpg": "/static/media/imgsection4.3c0fe754e24a3bd4efb8.jpg",
     "static/media/4.jpg": "/static/media/4.3b72f91b2f2615d579f1.jpg",
@@ -77,6 +76,7 @@
     "static/media/imgsection3.jpg": "/static/media/imgsection3.f905f9354f44ae549390.jpg",
     "static/media/accademia.png": "/static/media/accademia.9248084f879371899e90.png",
     "static/media/casa2.jpg": "/static/media/casa2.bd5268deece57e8193b9.jpg",
+    "static/media/2.jpg": "/static/media/2.b9c7e22cff444f441849.jpg",
     "static/media/imgsection2.jpg": "/static/media/imgsection2.d949437992ececf7ef72.jpg",
     "static/media/matrimoni2.jpg": "/static/media/matrimoni2.e3a2d530e1e2bd4ec37c.jpg",
     "static/media/imgsection5.jpg": "/static/media/imgsection5.b64b43468e43ff95e631.jpg",
@@ -87,12 +87,12 @@
     "static/media/fir.png": "/static/media/fir.083506f47aa3e2032e46.png",
     "static/media/acsi.png": "/static/media/acsi.5ff27952dcfdf7428613.png",
     "index.html": "/index.html",
-    "main.0780cab1.css.map": "/static/css/main.0780cab1.css.map",
-    "main.b7eaa5b1.js.map": "/static/js/main.b7eaa5b1.js.map",
+    "main.d4f64bc6.css.map": "/static/css/main.d4f64bc6.css.map",
+    "main.aafc0fcc.js.map": "/static/js/main.aafc0fcc.js.map",
     "787.16f5691b.chunk.js.map": "/static/js/787.16f5691b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.0780cab1.css",
-    "static/js/main.b7eaa5b1.js"
+    "static/css/main.d4f64bc6.css",
+    "static/js/main.aafc0fcc.js"
   ]
 }
