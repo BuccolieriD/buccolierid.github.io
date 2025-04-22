@@ -1,43 +1,37 @@
-import { useState, useEffect } from "react";
-import { UploadForm } from "./newComponents/UploadForm";
-import { Gallery } from "./newComponents/Gallery";
-import GenderSelection from "./newComponents/GenderSelection";
-import FakeLogin from "./newComponents/FakeLogin";
+import { useEffect, useState } from "react";
+import { supabase } from "./supabaseClient";
+import LoginPage from "./components/LoginPage";
+import WorkoutPage from "./components/HomePage";
+import { Toaster } from "react-hot-toast";
 
-export default function App() {
-  const [refresh, setRefresh] = useState(false);
-  const [userId, setUserId] = useState(null);
+const App = () => {
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('user_id');
-    if (storedUserId) {
-      setUserId(storedUserId);
-    }
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setLoading(false);
+    };
+
+    getSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  const handleUpload = () => {
-    setRefresh(!refresh);
-  };
-
-  const handleLogin = (id) => {
-    setUserId(id);
-    localStorage.setItem("user_id", id);
-  };
+  if (loading) return <p className="text-white text-center mt-20">Caricamento...</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-300 to-pink-300 py-10 flex justify-center items-center">
-      <div className="bg-white w-[90%] max-w-4xl p-6 rounded-xl shadow-xl">
-        {userId ? (
-          <>
-            <h1 className="text-center text-4xl font-bold text-pink-700 mb-6">IL MIO GENDER REVEAL ❤️</h1>
-            <GenderSelection />
-            <UploadForm onUpload={handleUpload} />
-            <Gallery key={refresh} />
-          </>
-        ) : (
-          <FakeLogin onLogin={handleLogin} />
-        )}
-      </div>
-    </div>
+    <>
+      <Toaster position="top-center" reverseOrder={false} />
+      {session ? <WorkoutPage /> : <LoginPage />}
+    </>
   );
-}
+};
+
+export default App;
