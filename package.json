@@ -1,6 +1,5 @@
 {
   "name": "project-workout",
-  "homepage": "https://github.com/BuccolieriD/buccolierid.github.io",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
