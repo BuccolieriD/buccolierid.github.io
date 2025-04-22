@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/BuccolieriD/buccolierid.github.io/static/css/main.a45b5777.css",
+    "main.js": "/BuccolieriD/buccolierid.github.io/static/js/main.67e59da7.js",
+    "static/js/952.0451cf25.chunk.js": "/BuccolieriD/buccolierid.github.io/static/js/952.0451cf25.chunk.js",
+    "index.html": "/BuccolieriD/buccolierid.github.io/index.html",
+    "main.a45b5777.css.map": "/BuccolieriD/buccolierid.github.io/static/css/main.a45b5777.css.map",
+    "main.67e59da7.js.map": "/BuccolieriD/buccolierid.github.io/static/js/main.67e59da7.js.map",
+    "952.0451cf25.chunk.js.map": "/BuccolieriD/buccolierid.github.io/static/js/952.0451cf25.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a45b5777.css",
+    "static/js/main.67e59da7.js"
+  ]
+}
