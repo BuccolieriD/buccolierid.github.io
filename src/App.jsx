@@ -1,8 +1,24 @@
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import LoginPage from "./components/LoginPage";
 import WorkoutPage from "./components/HomePage";
+import UpdatePasswordPage from "./components/UpdatePasswordPage";
 import { Toaster } from "react-hot-toast";
+import RegistrationSuccessPage from "./components/RegistrationSuccessPage";
+
+const AppRoutes = ({ session }) => {
+  const location = useLocation();
+  const isRecovery = location.pathname === "/update-password";
+
+  return (
+    <Routes>
+      <Route path="/registration-success" element={<RegistrationSuccessPage />} />
+      <Route path="/update-password" element={<UpdatePasswordPage />} />
+      <Route path="/" element={session && !isRecovery ? <WorkoutPage /> : <LoginPage />} />
+    </Routes>
+  );
+};
 
 const App = () => {
   const [session, setSession] = useState(null);
@@ -27,10 +43,10 @@ const App = () => {
   if (loading) return <p className="text-white text-center mt-20">Caricamento...</p>;
 
   return (
-    <>
-      <Toaster position="top-center" reverseOrder={false} />
-      {session ? <WorkoutPage /> : <LoginPage />}
-    </>
+    <Router>
+      <Toaster position="top-center" />
+      <AppRoutes session={session} />
+    </Router>
   );
 };
 
