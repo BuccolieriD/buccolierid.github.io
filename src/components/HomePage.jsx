@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import DaySelector from "../components/DaySelector";
 import AddExerciseModal from "../components/AddExerciseModal";
 import ExerciseTable from "../components/ExerciseTable";
+import DietTable from "../components/DietTable"; // Assicurati che DietTable sia presente
+import DietDaySelector from "../components/DietDaySelector"; // Importa il componente per la selezione dei giorni dieta
 import { supabase } from "../supabaseClient";
 import { UserCircle, LogOut } from "lucide-react";
 import logo from "../assets/Screenshot 2025-04-23 110556.png";
+
 const weeks = ["Settimana 1", "Settimana 2", "Settimana 3", "Settimana 4"];
 
 const WorkoutPage = () => {
@@ -14,28 +17,29 @@ const WorkoutPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [activeDays, setActiveDays] = useState([]);
+  const [mode, setMode] = useState("workout"); // Stato per gestire la modalità Allenamento/Dieta
+  const [activeDays, setActiveDays] = useState([]); // Array per tenere traccia dei giorni attivi per allenamento
 
   useEffect(() => {
     const fetchActiveDays = async () => {
-      if (!user) return;
+      if (mode === "workout" && user) {
+        const { data, error } = await supabase
+          .from("exercises")
+          .select("day")
+          .eq("user_id", user.id)
+          .contains("week", [selectedWeek]);
 
-      const { data, error } = await supabase
-        .from("exercises")
-        .select("day")
-        .eq("user_id", user.id)
-        .contains("week", [selectedWeek]);
-
-      if (!error) {
-        const daysSet = new Set(data.map((ex) => ex.day));
-        setActiveDays([...daysSet]);
-      } else {
-        console.error("Errore nel recupero dei giorni attivi", error);
+        if (!error) {
+          const daysSet = new Set(data.map((ex) => ex.day));
+          setActiveDays([...daysSet]);
+        } else {
+          console.error("Errore nel recupero dei giorni attivi", error);
+        }
       }
     };
 
     fetchActiveDays();
-  }, [selectedWeek, refresh, user]);
+  }, [selectedWeek, refresh, user, mode]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -63,8 +67,6 @@ const WorkoutPage = () => {
           <div className="flex justify-between items-center h-16">
             {/* Brand */}
             <div className="flex-shrink-0 flex items-center gap-2">
-              {/*         <span className="text-2xl">🏋️</span>
-        <span className="text-blue-500 text-xl font-bold">GymTracker</span> */}
               <img
                 src={logo}
                 alt="Logo"
@@ -100,6 +102,17 @@ const WorkoutPage = () => {
                     <LogOut size={16} />
                     Logout
                   </button>
+                  {/* Aggiungi il pulsante per cambiare modalità */}
+                  <button
+                    onClick={() =>
+                      setMode(mode === "workout" ? "diet" : "workout")
+                    }
+                    className="w-full px-4 py-3 text-left hover:bg-blue-800 text-blue-400 transition"
+                  >
+                    {mode === "workout"
+                      ? "Passa alla Dieta"
+                      : "Passa all'Allenamento"}
+                  </button>
                 </div>
               )}
             </div>
@@ -115,9 +128,9 @@ const WorkoutPage = () => {
             <button
               key={week}
               onClick={() => setSelectedWeek(week)}
-              className={`px-4 py-2 rounded-xl font-semibold transition text-sm ${
+              className={`px-6 py-2 rounded-xl font-semibold transition text-sm ${
                 selectedWeek === week ? "bg-purple-600" : "bg-gray-700"
-              } hover:bg-purple-500`}
+              } hover:bg-purple-500 focus:outline-none`}
             >
               {week}
             </button>
@@ -125,26 +138,40 @@ const WorkoutPage = () => {
         </div>
 
         {/* Day Selector */}
-        <DaySelector
-          selectedDay={selectedDay}
-          onSelectDay={setSelectedDay}
-          activeDays={activeDays}
-        />
-        {/* Add Exercise Button */}
-        <button
-          onClick={() => setShowModal(true)}
-          className="mb-4 mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-xl shadow-lg transition text-white"
-        >
-          ➕ Aggiungi Esercizio
-        </button>
+        {mode === "workout" ? (
+          <DaySelector
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+            activeDays={activeDays} // Passiamo i giorni attivi per l'allenamento
+          />
+        ) : (
+          <DietDaySelector
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+          />
+        )}
 
-        {/* Exercise Table */}
-        <ExerciseTable
-          selectedWeek={selectedWeek}
-          selectedDay={selectedDay}
-          refresh={refresh}
-          onExerciseDeleted={() => setRefresh((r) => !r)} // <-- ECCOLA
-        />
+        {/* Aggiungi esercizio se sei in modalità Allenamento */}
+        {mode === "workout" && (
+          <button
+            onClick={() => setShowModal(true)}
+            className="mb-4 mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-xl shadow-lg transition text-white"
+          >
+            ➕ Aggiungi Esercizio
+          </button>
+        )}
+
+        {/* Mostra la tabella in base alla modalità */}
+        {mode === "workout" ? (
+          <ExerciseTable
+            selectedWeek={selectedWeek}
+            selectedDay={selectedDay}
+            refresh={refresh}
+            onExerciseDeleted={() => setRefresh((r) => !r)} // <-- ECCOLA
+          />
+        ) : (
+          <DietTable selectedWeek={selectedWeek} selectedDay={selectedDay} />
+        )}
       </div>
 
       {/* Add Exercise Modal */}
