@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import toast from "react-hot-toast";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiCheckSquare } from "react-icons/fi";
 
 const muscleGroups = [
   "Tutti",
@@ -164,16 +164,16 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setMultiDeleteMode(!multiDeleteMode)}
-            className="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm"
+            className={`px-3 py-1 rounded text-sm transition-colors ${multiDeleteMode ? 'bg-gray-600' : 'bg-red-600 hover:bg-red-500'}`}
           >
-            {multiDeleteMode ? "Annulla selezione" : "Elimina multipla"}
+            {multiDeleteMode ? "Annulla selezione" : <><FiCheckSquare className="inline mr-1" /> Elimina multipla</>}
           </button>
           {multiDeleteMode && selectedIds.length > 0 && (
             <button
               onClick={deleteSelectedExercises}
               className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded text-sm"
             >
-              Elimina selezionati ({selectedIds.length})
+              <FiTrash2 className="inline mr-1" /> Elimina selezionati ({selectedIds.length})
             </button>
           )}
         </div>
@@ -193,10 +193,10 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
                     <th className="p-2 text-left">Nome</th>
                     <th className="p-2 text-left">Serie</th>
                     <th className="p-2 text-left">Note</th>
-                    <th className="p-2 text-center">W1</th>
-                    <th className="p-2 text-center">W2</th>
-                    <th className="p-2 text-center">W3</th>
-                    <th className="p-2 text-center">W4</th>
+                    <th className="p-2 text-center">W1 KG</th>
+                    <th className="p-2 text-center">W2 KG</th>
+                    <th className="p-2 text-center">W3 KG</th>
+                    <th className="p-2 text-center">W4 KG</th>
                     <th className="p-2"></th>
                   </tr>
                 </thead>
@@ -239,12 +239,12 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
                         </td>
                       ))}
                       <td className="p-2 text-center">
-                        <button
-                          onClick={() => deleteExercise(ex.id, ex.week)}
-                          className="text-red-500 hover:text-red-400 text-sm"
-                        >
-                          🗑️
-                        </button>
+                      <button
+                              onClick={() => deleteExercise(ex.id, ex.week)}
+                              className="text-red-500 hover:text-red-400 text-sm"
+                            >
+                              <FiTrash2 />
+                            </button>
                       </td>
                     </tr>
                   ))}

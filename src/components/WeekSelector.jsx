@@ -1,5 +1,5 @@
 import { useState } from "react";
-const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
+const weeks = ["Settimana 1", "Settimana 2", "Settimana 3", "Settimana 4"];
 
 export default function WeekSelector({ selectedWeek, setSelectedWeek }) {
   return (

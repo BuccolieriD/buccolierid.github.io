@@ -6,6 +6,9 @@ import WorkoutPage from "./components/HomePage";
 import UpdatePasswordPage from "./components/UpdatePasswordPage";
 import { Toaster } from "react-hot-toast";
 import RegistrationSuccessPage from "./components/RegistrationSuccessPage";
+import PasswordResetSentPage from "./components/PasswordResetSentPage";
+// Importa l'immagine
+import backgroundImage from './assets/Garage-Gym-6x6_full_mod_logo.jpg';
 
 const AppRoutes = ({ session }) => {
   const location = useLocation();
@@ -13,6 +16,7 @@ const AppRoutes = ({ session }) => {
 
   return (
     <Routes>
+      <Route path="/password-reset-sent" element={<PasswordResetSentPage />} />
       <Route path="/registration-success" element={<RegistrationSuccessPage />} />
       <Route path="/update-password" element={<UpdatePasswordPage />} />
       <Route path="/" element={session && !isRecovery ? <WorkoutPage /> : <LoginPage />} />
@@ -52,8 +56,18 @@ const App = () => {
 
   return (
     <Router>
-      <Toaster position="top-center" />
-      <AppRoutes session={session} />
+      <div
+        className="app-container"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,  // Usa l'immagine importata
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: "100vh",
+        }}
+      >
+        <Toaster position="top-center" />
+        <AppRoutes session={session} />
+      </div>
     </Router>
   );
 };

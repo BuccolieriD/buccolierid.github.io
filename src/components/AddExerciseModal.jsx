@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import toast from "react-hot-toast";
 
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 const muscleGroups = ["", "Petto", "Schiena", "Spalle", "Bicipiti", "Tricipiti", "Gambe", "Addominali", "Glutei", "Cardio"];
 
 const AddExerciseModal = ({ isOpen, onClose, onExerciseAdded, defaultDay, defaultWeek }) => {
@@ -15,7 +15,7 @@ const AddExerciseModal = ({ isOpen, onClose, onExerciseAdded, defaultDay, defaul
     muscle_group: ""
   });
 
-  const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
+  const weeks = ["Settimana 1", "Settimana 2", "Settimana 3", "Settimana 4"];
 
   useEffect(() => {
     if (isOpen) {

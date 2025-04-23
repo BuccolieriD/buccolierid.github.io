@@ -1,4 +1,4 @@
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
 const DaySelector = ({ selectedDay, onSelectDay }) => {
   return (

@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../supabaseClient";
 import toast from "react-hot-toast";
@@ -9,7 +9,11 @@ const RegistrationSuccessPage = () => {
   const location = useLocation();
   const [resent, setResent] = useState(false);
   const email = new URLSearchParams(location.search).get("email");
+  const navigate = useNavigate();
 
+  const handleGoBackToLogin = () => {
+    navigate("/"); // Naviga alla pagina di login
+  };
   const resendConfirmation = async () => {
     if (!email) {
       toast.error("Email non trovata.");
@@ -47,7 +51,8 @@ const RegistrationSuccessPage = () => {
 
         <h2 className="text-2xl font-bold mb-3">Registrazione completata 🎉</h2>
         <p className="mb-2">
-          Abbiamo inviato un'email a <span className="text-blue-300">{email}</span>.
+          Abbiamo inviato un'email a{" "}
+          <span className="text-blue-300">{email}</span>.
           <br />
           Clicca sul link per confermare la tua identità.
         </p>
@@ -60,7 +65,15 @@ const RegistrationSuccessPage = () => {
           disabled={resent}
           className="text-blue-400 underline hover:text-blue-300 disabled:opacity-40"
         >
-          {!resent ? "Non hai ricevuto la conferma? Invia di nuovo" : "Email reinviata!"}
+          {!resent
+            ? "Non hai ricevuto la conferma? Invia di nuovo"
+            : "Email reinviata!"}
+        </button>
+        <button
+          onClick={handleGoBackToLogin}
+          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition"
+        >
+          Torna alla login
         </button>
       </motion.div>
     </div>

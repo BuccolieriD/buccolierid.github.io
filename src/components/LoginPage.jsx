@@ -3,7 +3,7 @@ import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Mail, Lock } from "lucide-react";
-import sfondo from "../assets/performance-home-gym-hero.jpg"
+import sfondo from "../assets/Garage-Gym-6x6_full_mod_logo.jpg"
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,11 +36,9 @@ const LoginPage = () => {
     });
 
     if (error) toast.error("Errore durante l'invio.");
-    else
-      toast.success("Email inviata per il reset!", {
-        duration: 5000,
-        position: "top-center",
-      });
+    else {
+      navigate(`/password-reset-sent?email=${encodeURIComponent(email)}`);
+    }
   };
 
   return (
@@ -49,7 +47,7 @@ const LoginPage = () => {
       <img
         src={sfondo} // Puoi cambiarla con una tua
         alt="Gym background"
-        className="absolute inset-0 w-full h-full object-cover opacity-40"
+        className="absolute inset-0 w-full h-full object-cover opacity-80"
       />
       {/* Overlay scuro */}
       <div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm" />
@@ -105,12 +103,13 @@ const LoginPage = () => {
           </button>
 
           {isLogin && (
-            <button
+            <div> <button
               onClick={handlePasswordReset}
-              className="block underline hover:text-blue-400"
+              className="underline hover:text-blue-400"
             >
               Hai dimenticato la password?
-            </button>
+            </button></div>
+           
           )}
 
           {!isLogin && (
