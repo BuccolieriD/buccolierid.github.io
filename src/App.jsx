@@ -25,6 +25,14 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const redirect = sessionStorage.redirectTo;
+    if (redirect) {
+      sessionStorage.removeItem("redirectTo");
+      window.history.replaceState(null, "", redirect);
+    }
+  }, []);
+
+  useEffect(() => {
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
       setSession(data.session);

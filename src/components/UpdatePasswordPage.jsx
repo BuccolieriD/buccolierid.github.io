@@ -8,20 +8,20 @@ const UpdatePasswordPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleRecovery = async () => {
-      const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-      if (error) {
-        toast.error("Errore durante il recupero della sessione.");
-        console.error(error);
+    const checkUser = async () => {
+      const { data: userData, error } = await supabase.auth.getUser();
+      if (error || !userData?.user) {
+        toast.error("Sessione non trovata. Riprova dal link email.");
+      } else {
+        toast.success("Sessione valida, puoi aggiornare la password!");
       }
     };
-    handleRecovery();
+
+    checkUser();
   }, []);
 
   const handleUpdate = async () => {
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
 
     if (error) {
       toast.error("Errore durante l'aggiornamento della password.");
