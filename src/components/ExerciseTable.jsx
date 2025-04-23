@@ -16,7 +16,12 @@ const muscleGroups = [
   "Cardio",
 ];
 
-const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
+const ExerciseTable = ({
+  selectedDay,
+  refresh,
+  selectedWeek,
+  onExerciseDeleted,
+}) => {
   const [exercises, setExercises] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("Tutti");
   const [multiDeleteMode, setMultiDeleteMode] = useState(false);
@@ -35,7 +40,7 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
       .eq("user_id", user_id)
       .contains("week", [selectedWeek])
       .eq("day", selectedDay)
-      .order("created_at", { ascending: true });
+      .order("sort_order", { ascending: true });
 
     if (selectedGroup !== "Tutti") {
       query = query.eq("muscle_group", selectedGroup);
@@ -72,6 +77,7 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
       if (!error) {
         toast.success("Esercizio eliminato.");
         fetchExercises();
+        onExerciseDeleted?.(); // <-- AGGIUNGI QUESTO
       } else {
         toast.error("Errore eliminazione.");
         console.error("Errore eliminazione:", error.message);
@@ -118,6 +124,7 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
     setSelectedIds([]);
     setMultiDeleteMode(false);
     fetchExercises();
+    onExerciseDeleted?.();
   };
 
   const toggleSelected = (id) => {
@@ -164,16 +171,25 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setMultiDeleteMode(!multiDeleteMode)}
-            className={`px-3 py-1 rounded text-sm transition-colors ${multiDeleteMode ? 'bg-gray-600' : 'bg-red-600 hover:bg-red-500'}`}
+            className={`px-3 py-1 rounded text-sm transition-colors ${
+              multiDeleteMode ? "bg-gray-600" : "bg-red-600 hover:bg-red-500"
+            }`}
           >
-            {multiDeleteMode ? "Annulla selezione" : <><FiCheckSquare className="inline mr-1" /> Elimina multipla</>}
+            {multiDeleteMode ? (
+              "Annulla selezione"
+            ) : (
+              <>
+                <FiCheckSquare className="inline mr-1" /> Elimina multipla
+              </>
+            )}
           </button>
           {multiDeleteMode && selectedIds.length > 0 && (
             <button
               onClick={deleteSelectedExercises}
               className="bg-red-700 hover:bg-red-600 px-3 py-1 rounded text-sm"
             >
-              <FiTrash2 className="inline mr-1" /> Elimina selezionati ({selectedIds.length})
+              <FiTrash2 className="inline mr-1" /> Elimina selezionati (
+              {selectedIds.length})
             </button>
           )}
         </div>
@@ -185,7 +201,9 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
         <div className="overflow-x-auto">
           {Object.entries(groupedExercises).map(([group, groupExercises]) => (
             <div key={group} className="mb-6">
-              <h3 className="text-lg font-semibold mb-2 text-blue-400">{group}</h3>
+              <h3 className="text-lg font-semibold mb-2 text-blue-400">
+                {group}
+              </h3>
               <table className="min-w-full text-sm border border-gray-700 rounded">
                 <thead className="bg-gray-700">
                   <tr>
@@ -233,18 +251,24 @@ const ExerciseTable = ({ selectedDay, refresh, selectedWeek }) => {
                             className="bg-gray-900 p-1 rounded w-16 text-center"
                             value={ex[`week${week}`] || ""}
                             onChange={(e) =>
-                              updateExercise(ex.id, `week${week}`, e.target.value)
+                              updateExercise(
+                                ex.id,
+                                `week${week}`,
+                                e.target.value === ""
+                                  ? null
+                                  : parseFloat(e.target.value)
+                              )
                             }
                           />
                         </td>
                       ))}
                       <td className="p-2 text-center">
-                      <button
-                              onClick={() => deleteExercise(ex.id, ex.week)}
-                              className="text-red-500 hover:text-red-400 text-sm"
-                            >
-                              <FiTrash2 />
-                            </button>
+                        <button
+                          onClick={() => deleteExercise(ex.id, ex.week)}
+                          className="text-red-500 hover:text-red-400 text-sm"
+                        >
+                          <FiTrash2 />
+                        </button>
                       </td>
                     </tr>
                   ))}
