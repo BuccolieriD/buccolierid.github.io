@@ -62,7 +62,6 @@ const App = () => {
           backgroundImage: `url(${backgroundImage})`,  // Usa l'immagine importata
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: "100vh",
         }}
       >
         <Toaster position="top-center" />
