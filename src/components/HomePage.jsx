@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DaySelector from "../components/DaySelector";
 import AddExerciseModal from "../components/AddExerciseModal";
 import ExerciseTable from "../components/ExerciseTable";
-import DietTable from "../components/DietTable"; // Assicurati che DietTable sia presente
-import DietDaySelector from "../components/DietDaySelector"; // Importa il componente per la selezione dei giorni dieta
+import DietTable from "../components/DietTable";
+import DietDaySelector from "../components/DietDaySelector";
 import { supabase } from "../supabaseClient";
 import { UserCircle, LogOut } from "lucide-react";
 import logo from "../assets/Screenshot 2025-04-23 110556.png";
@@ -17,9 +17,27 @@ const WorkoutPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mode, setMode] = useState("workout"); // Stato per gestire la modalità Allenamento/Dieta
-  const [activeDays, setActiveDays] = useState([]); // Array per tenere traccia dei giorni attivi per allenamento
+  const [mode, setMode] = useState("workout");
+  const [activeDays, setActiveDays] = useState([]);
 
+  // Riferimento per il dropdown
+  const dropdownRef = useRef(null);
+
+  // Effetto per chiudere la dropdown se si clicca fuori
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Effetto per recuperare i giorni attivi per l'allenamento
   useEffect(() => {
     const fetchActiveDays = async () => {
       if (mode === "workout" && user) {
@@ -41,6 +59,7 @@ const WorkoutPage = () => {
     fetchActiveDays();
   }, [selectedWeek, refresh, user, mode]);
 
+  // Effetto per ottenere l'utente
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -49,18 +68,20 @@ const WorkoutPage = () => {
     getUser();
   }, []);
 
+  // Funzione per gestire l'aggiunta di un esercizio
   const handleExerciseAdded = () => {
     setRefresh((r) => !r);
     setShowModal(false);
   };
 
+  // Funzione per il logout
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/";
   };
 
   return (
-    <div className="min-h-screen  text-white">
+    <div className="min-h-screen text-white">
       {/* Navbar */}
       <div className="bg-gray-900 shadow-lg w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -91,17 +112,13 @@ const WorkoutPage = () => {
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-52 bg-gray-800 text-white border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden">
+                <div
+                  ref={dropdownRef}
+                  className="absolute right-0 mt-2 w-52 bg-gray-800 text-white border border-gray-700 rounded-xl shadow-xl z-50 overflow-hidden"
+                >
                   <div className="px-4 py-3 border-b border-gray-700 truncate">
                     {user?.email}
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-red-800 text-red-400 transition"
-                  >
-                    <LogOut size={16} />
-                    Logout
-                  </button>
                   {/* Aggiungi il pulsante per cambiare modalità */}
                   <button
                     onClick={() =>
@@ -113,6 +130,13 @@ const WorkoutPage = () => {
                       ? "Passa alla Dieta"
                       : "Passa all'Allenamento"}
                   </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-red-800 text-red-400 transition"
+                  >
+                    <LogOut size={16} />
+                    Logout
+                  </button>
                 </div>
               )}
             </div>
@@ -122,20 +146,22 @@ const WorkoutPage = () => {
 
       {/* Main Content */}
       <div className="p-6 flex flex-col items-center">
-        {/* Week Selector */}
-        <div className="flex gap-2 flex-wrap justify-center mb-4">
-          {weeks.map((week) => (
-            <button
-              key={week}
-              onClick={() => setSelectedWeek(week)}
-              className={`px-6 py-2 rounded-xl font-semibold transition text-sm ${
-                selectedWeek === week ? "bg-purple-600" : "bg-gray-700"
-              } hover:bg-purple-500 focus:outline-none`}
-            >
-              {week}
-            </button>
-          ))}
-        </div>
+        {/* Week Selector (visibile solo se modalità workout) */}
+        {mode === "workout" && (
+          <div className="flex gap-2 flex-wrap justify-center mb-4">
+            {weeks.map((week) => (
+              <button
+                key={week}
+                onClick={() => setSelectedWeek(week)}
+                className={`px-6 py-2 rounded-xl font-semibold transition text-sm ${
+                  selectedWeek === week ? "bg-purple-600" : "bg-gray-700"
+                } hover:bg-purple-500 focus:outline-none`}
+              >
+                {week}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Day Selector */}
         {mode === "workout" ? (
