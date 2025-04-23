@@ -1,15 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.a45b5777.css",
-    "main.js": "/static/js/main.1e2fc36c.js",
+    "main.css": "/static/css/main.2d39d391.css",
+    "main.js": "/static/js/main.52e9445e.js",
     "static/js/952.0451cf25.chunk.js": "/static/js/952.0451cf25.chunk.js",
+    "static/media/Garage-Gym-6x6_full_mod_logo.jpg": "/static/media/Garage-Gym-6x6_full_mod_logo.43aacd608e2730096b05.jpg",
+    "static/media/Screenshot 2025-04-23 110556.png": "/static/media/Screenshot 2025-04-23 110556.5a05aadc9beeef93071c.png",
     "index.html": "/index.html",
-    "main.a45b5777.css.map": "/static/css/main.a45b5777.css.map",
-    "main.1e2fc36c.js.map": "/static/js/main.1e2fc36c.js.map",
+    "main.2d39d391.css.map": "/static/css/main.2d39d391.css.map",
+    "main.52e9445e.js.map": "/static/js/main.52e9445e.js.map",
     "952.0451cf25.chunk.js.map": "/static/js/952.0451cf25.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a45b5777.css",
-    "static/js/main.1e2fc36c.js"
+    "static/css/main.2d39d391.css",
+    "static/js/main.52e9445e.js"
   ]
 }
