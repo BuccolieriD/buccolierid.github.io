@@ -67,12 +67,23 @@ export default function AboutMe({ name = 'Angelo Jackowski', title = 'Agente Imm
           style={{ boxShadow: '0 40px 120px rgba(2,6,23,0.55)' }}
         >
           <div className="flex justify-center md:justify-start -mt-6 md:-mt-10">
-            <img
-              src={portrait}
-              alt={`${name} portrait`}
-              className={`w-80 h-80 md:w-72 md:h-72 object-cover rounded-xl shadow-2xl border border-gray-100 transform transition-all duration-700 ease-out ${
+            <div 
+              className={`w-80 h-80 md:w-72 md:h-72 rounded-xl shadow-2xl transform transition-all duration-700 ease-out ${
                 prefersReducedMotion ? '' : imageVisible ? 'scale-100 opacity-100 translate-x-0' : 'scale-95 opacity-0 -translate-x-6'
               }`}
+              style={{
+                backgroundImage: `url(${portrait})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundColor: 'transparent',
+                filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))',
+                WebkitMaskImage: `url(${portrait})`,
+                WebkitMaskSize: 'cover',
+                WebkitMaskPosition: 'center',
+                maskImage: `url(${portrait})`,
+                maskSize: 'cover',
+                maskPosition: 'center'
+              }}
             />
           </div>
           <div className={`text-center md:text-left transition-all duration-500 ${prefersReducedMotion ? 'opacity-100' : textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>

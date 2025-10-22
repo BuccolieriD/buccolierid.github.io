@@ -28,7 +28,15 @@ export default function AboutMeFramer({ name = 'Angelo Jackowski', title = 'Agen
     <section className="bg-transparent text-slate-800 py-16">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div variants={container} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="-mt-6 md:-mt-12 bg-gray-50 rounded-2xl shadow-md p-6 md:p-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center relative z-20">
-          <motion.img variants={item} src={portrait} alt={`${name} portrait`} className="w-72 h-72 object-cover rounded-xl shadow-xl border border-gray-100" />
+          <motion.img 
+            variants={item} 
+            src={portrait} 
+            alt={`${name} portrait`} 
+            className="w-72 h-72 object-cover rounded-xl shadow-xl"
+            style={{
+              backgroundColor: 'transparent'
+            }}
+          />
           <div>
             <motion.h3 variants={item} className="text-3xl font-display mb-2">{name}</motion.h3>
             <motion.p variants={item} className="text-sm text-slate-500 font-medium mb-4">{title}</motion.p>
