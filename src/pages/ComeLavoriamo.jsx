@@ -73,10 +73,27 @@ const ComeLavoriamo = () => {
         <div className="space-y-12">
           {/* Sezione 1 */}
           <section className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">Il Nostro Processo</h2>
+            <h2 
+              ref={el => sectionRefs.current.processTitle = el}
+              className={`text-3xl font-bold text-gray-900 mb-8 transform transition-all duration-1000 ${
+                visibleSections.processTitle ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'
+              }`}
+            >
+              Il Nostro Processo
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <div className="text-4xl mb-4">🔍</div>
+              {/* Card 1 (Sinistra) - Scorre da SINISTRA */}
+              <div 
+                ref={el => sectionRefs.current.process1 = el}
+                className={`bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-1000 ${
+                  visibleSections.process1 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 -translate-x-20'
+                }`}
+              >
+                <div className={`text-4xl mb-4 transform transition-all duration-700 delay-300 ${
+                  visibleSections.process1 ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 rotate-180'
+                }`}>🔍</div>
                 <h3 className="text-xl font-semibold mb-3">1. Analisi</h3>
                 <p className="text-gray-600">
                   Analizziamo il mercato immobiliare locale e identifichiamo le migliori opportunità 
@@ -84,8 +101,18 @@ const ComeLavoriamo = () => {
                 </p>
               </div>
               
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <div className="text-4xl mb-4">🤝</div>
+              {/* Card 2 (Centrale) - Scorre dal BASSO */}
+              <div 
+                ref={el => sectionRefs.current.process2 = el}
+                className={`bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-1000 ${
+                  visibleSections.process2 
+                    ? 'opacity-100 translate-y-0 scale-100' 
+                    : 'opacity-0 translate-y-20 scale-95'
+                }`}
+              >
+                <div className={`text-4xl mb-4 transform transition-all duration-700 delay-300 ${
+                  visibleSections.process2 ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
+                }`}>🤝</div>
                 <h3 className="text-xl font-semibold mb-3">2. Collaborazione</h3>
                 <p className="text-gray-600">
                   Lavoriamo insieme ai nostri segnalatori per individuare proprietà con 
@@ -93,8 +120,18 @@ const ComeLavoriamo = () => {
                 </p>
               </div>
               
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <div className="text-4xl mb-4">💰</div>
+              {/* Card 3 (Destra) - Scorre da DESTRA */}
+              <div 
+                ref={el => sectionRefs.current.process3 = el}
+                className={`bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform transition-all duration-1000 ${
+                  visibleSections.process3 
+                    ? 'opacity-100 translate-x-0' 
+                    : 'opacity-0 translate-x-20'
+                }`}
+              >
+                <div className={`text-4xl mb-4 transform transition-all duration-700 delay-300 ${
+                  visibleSections.process3 ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-0 -rotate-90'
+                }`}>💰</div>
                 <h3 className="text-xl font-semibold mb-3">3. Realizzazione</h3>
                 <p className="text-gray-600">
                   Completiamo l'operazione garantendo il massimo valore per tutte le parti 
