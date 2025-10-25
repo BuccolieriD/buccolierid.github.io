@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../components/NavBar';
-import sfondo from '../asset/sfondobackground.png';
+import PageHero from '../components/PageHero';
 import { useToasts } from '../components/Toast';
+// Background dedicato (tema: networking/collaborazione)
+const segnBg = 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1920&auto=format&fit=crop';
 
 const DiventaSegnalatore = () => {
   const [visibleSections, setVisibleSections] = useState({});
@@ -93,23 +95,7 @@ const DiventaSegnalatore = () => {
   return (
     <div className="min-h-screen">
       <NavBar current="Diventa Segnalatore" />
-      
-      <div
-        className="bg-gray-900 pb-20 relative"
-        style={{
-          backgroundImage: `url(${sfondo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* darker veil to improve title/nav contrast */}
-        <div aria-hidden className="absolute inset-0 bg-black/50 pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto py-12 px-6 flex items-center justify-center relative z-10">
-          <h1 className="text-5xl pt-14 font-bold text-white text-center">Diventa Segnalatore</h1>
-        </div>
-      </div>
+      <PageHero title="Diventa Segnalatore" bgImage={segnBg} />
 
       <main className="max-w-7xl mx-auto px-6 py-16">
         <div className="space-y-12">

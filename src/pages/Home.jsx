@@ -172,7 +172,7 @@ export default function Home() {
           </div>
           <div className="text-center">
             <h1 className={`text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl transform transition-all duration-700 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
-              Angelo Jackowski
+               Jackowski Immobiliare srl
             </h1>
            {/*  <p className="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
               Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui

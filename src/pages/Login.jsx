@@ -4,7 +4,9 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import logo from '../asset/logo.png';
-import sfondo from '../asset/sfondobackground.png';
+
+// Background dedicato alla pagina Login (tema: accesso/chiavi/porta)
+const loginBg = 'https://images.unsplash.com/photo-1518544801976-3e159e50e5bb?q=80&w=1920&auto=format&fit=crop';
 
 const GoogleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="18" height="18" className="inline-block mr-2">
@@ -72,7 +74,7 @@ const Login = () => {
     <div
       className="min-h-screen flex items-center justify-center p-6"
       style={{
-        backgroundImage: `url(${sfondo})`,
+        backgroundImage: `url(${loginBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

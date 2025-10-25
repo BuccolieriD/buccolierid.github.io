@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/NavBar';
-import sfondo from '../asset/sfondobackground.png';
+import PageHero from '../components/PageHero';
 import supabase from '../lib/supabaseClient';
 import { useSelector } from 'react-redux';
 import PropertyForm from '../components/PropertyForm';
+// Background dedicato (tema: esterni case/skyline real estate)
+const listingBg = 'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1920&auto=format&fit=crop';
 
 const ProprietaVendita = () => {
   const [filtri, setFiltri] = useState({
@@ -330,22 +332,7 @@ const ProprietaVendita = () => {
     <div className="min-h-screen">
       <NavBar current="Proprietà in Vendita" />
       
-      <div
-        className="bg-gray-900 pb-20 relative"
-        style={{
-          backgroundImage: `url(${sfondo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* darker veil to improve title/nav contrast */}
-        <div aria-hidden className="absolute inset-0 bg-black/50 pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto py-12 px-6 flex items-center justify-center relative z-10">
-          <h1 className="text-5xl pt-14 font-bold text-white text-center">Proprietà in Vendita</h1>
-        </div>
-      </div>
+  <PageHero title="Proprietà in Vendita" bgImage={listingBg} />
 
       <main className="max-w-7xl mx-auto px-6 py-16">
         {/* Filtri */}
@@ -709,9 +696,9 @@ const ProprietaVendita = () => {
                     <div>
                       <p className="font-medium">Social</p>
                       <div className="flex space-x-2">
-                        <a href="#" className="text-blue-100 hover:text-white transition-colors">Instagram</a>
+                        <button type="button" className="text-blue-100 hover:text-white transition-colors">Instagram</button>
                         <span className="text-blue-200">•</span>
-                        <a href="#" className="text-blue-100 hover:text-white transition-colors">Facebook</a>
+                        <button type="button" className="text-blue-100 hover:text-white transition-colors">Facebook</button>
                       </div>
                     </div>
                   </div>

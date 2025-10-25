@@ -4,9 +4,12 @@ import ArticleForm from '../components/ArticleForm';
 import { useSelector } from 'react-redux';
 import { useToasts } from '../components/Toast';
 import OverlaySpinner from '../components/OverlaySpinner';
-import sfondo from '../asset/sfondobackground.png';
+import PageHero from '../components/PageHero';
 import NavBar from '../components/NavBar';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+
+// Background dedicato da URL (tema: blog immobiliare/architettura)
+const blogBg = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920&auto=format&fit=crop';
 
 const Blog = () => {
   const [articles, setArticles] = useState([]);
@@ -230,22 +233,7 @@ const Blog = () => {
   return (
     <div className="min-h-screen">
       <NavBar current="Blog Immobili" />
-      <div
-        className="bg-gray-900 pb-20 relative"
-        style={{
-          backgroundImage: `url(${sfondo})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      >
-        {/* darker veil to improve title/nav contrast */}
-        <div aria-hidden className="absolute inset-0 bg-black/50 pointer-events-none" />
-
-        <div className="max-w-7xl  mx-auto py-12 px-6 flex items-center justify-center relative z-10">
-          <h1 className="text-5xl pt-14 font-bold text-white text-center">Blog Immobili</h1>
-        </div>
-      </div>
+      <PageHero title="Blog Immobili" bgImage={blogBg} />
 
       {/* Form creazione/modifica in modal */}
       {editingArticle && (

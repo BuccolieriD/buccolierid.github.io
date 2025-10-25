@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NavBar from '../components/NavBar';
+import PageHero from '../components/PageHero';
+
+// Background dedicato (tema: strada/smarrimento)
+const notFoundBg = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1920&auto=format&fit=crop';
 
 const NotFound = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div className="min-h-screen text-white">
       <NavBar current="" />
+      <PageHero title="Pagina non trovata" bgImage={notFoundBg} />
 
       <main className="flex items-center justify-center px-6 py-20">
         <section className="relative max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
