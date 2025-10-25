@@ -28,6 +28,11 @@ const DiventaSegnalatore = () => {
     messaggio: ''
   });
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const observers = {};
     

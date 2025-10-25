@@ -52,6 +52,11 @@ const Blog = () => {
   // Estrai autori unici dagli articoli
   const autoriDisponibili = [...new Set(articles.map(article => article.author))].sort();
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch articoli
   const fetchArticles = async () => {
     setLoading(true);

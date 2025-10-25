@@ -34,6 +34,11 @@ const ProprietaVendita = () => {
   const adminEmail = process.env.REACT_APP_ADMIN_EMAIL;
   const { add } = useToasts();
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch proprietà da Supabase
   const fetchProprieta = async () => {
     setLoading(true);

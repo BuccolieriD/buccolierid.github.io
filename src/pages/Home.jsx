@@ -10,6 +10,7 @@ export default function Home() {
   const [preview, setPreview] = useState([]);
   const [properties, setProperties] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null); // full article
+  const [selectedProperty, setSelectedProperty] = useState(null); // selected property for modal
   const [panelLoading, setPanelLoading] = useState(false);
   const heroRef = useRef(null);
   const previewRef = useRef(null);
@@ -26,6 +27,11 @@ export default function Home() {
   const [segnalatorInView, setSegnalatorInView] = useState(false);
   const [contactInView, setContactInView] = useState(false);
   const [logoAnimate, setLogoAnimate] = useState(false);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     const fetchPreview = async () => {
@@ -193,7 +199,7 @@ export default function Home() {
         </div>
           {/* dark veil over the background to improve contrast */}
           <div aria-hidden className="absolute inset-0 bg-black/30 pointer-events-none" />
-          <div ref={heroRef} className={`mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 relative z-10 transform transition-all duration-700 ${heroInView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-6'}`}>
+          <div ref={heroRef} className={`mx-auto max-w-2xl py-32 sm:py-48 lg:py-56 relative z-10 transform transition-all duration-1000 ${heroInView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-6'}`}>
           <div
             className="sm:mb-8 sm:flex sm:justify-center"
             style={{ placeItems: "anchor-center" }}
@@ -201,11 +207,11 @@ export default function Home() {
             <img
               alt="Company Logo"
               src={logo}
-              className={`h-[12vh] w-auto transform transition-all duration-700 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0 scale-105' : 'opacity-0 translate-y-2 scale-95'}`}
+              className={`h-[12vh] w-auto transform transition-all duration-1000 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0 scale-105' : 'opacity-0 translate-y-2 scale-95'}`}
             />
           </div>
           <div className="text-center">
-            <h1 className={`text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl transform transition-all duration-700 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
+            <h1 className={`text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl transform transition-all duration-1000 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}>
                Jackowski Immobiliare srl
             </h1>
            {/*  <p className="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">
@@ -274,7 +280,7 @@ export default function Home() {
       )}
 
   {/* Preview articoli */}
-  <div ref={previewRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+  <div ref={previewRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Blog Immobili</h3>
           <Link to="/blog" className="text-sm text-slate-300 hover:text-white transition-colors">
@@ -287,11 +293,11 @@ export default function Home() {
               key={a.id}
               type="button"
               onClick={() => openArticlePanel(a)}
-              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
+              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
                 previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
               style={{
-                transitionDelay: `${index * 150}ms`
+                transitionDelay: `${index * 200}ms`
               }}
             >
               {a.image ? (
@@ -320,7 +326,7 @@ export default function Home() {
       </div>
 
       {/* Preview Proprietà */}
-      <div ref={propertiesRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+      <div ref={propertiesRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Proprietà in Vendita</h3>
           <Link to="/proprieta-vendita" className="text-sm text-slate-300 hover:text-white transition-colors">
@@ -329,14 +335,15 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {properties.map((prop, index) => (
-            <Link
+            <button
               key={prop.id}
-              to="/proprieta-vendita"
-              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl ${
+              type="button"
+              onClick={() => setSelectedProperty(prop)}
+              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
                 propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
               style={{
-                transitionDelay: `${index * 150}ms`
+                transitionDelay: `${index * 200}ms`
               }}
             >
               {prop.immagini && prop.immagini.length > 0 ? (
@@ -372,13 +379,13 @@ export default function Home() {
                   </span>
                 </div>
               </div>
-            </Link>
+            </button>
           ))}
         </div>
       </div>
 
       {/* Sezione Come Lavoriamo */}
-      <div ref={comeLavoriamoRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+      <div ref={comeLavoriamoRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Il Nostro Metodo</h3>
           <Link to="/come-lavoriamo" className="text-sm text-slate-300 hover:text-white transition-colors">
@@ -394,11 +401,11 @@ export default function Home() {
           ].map((item, index) => (
             <div
               key={index}
-              className={`bg-white/5 p-6 rounded-lg transform transition-all duration-700 hover:bg-white/10 ${
+              className={`bg-white/5 p-6 rounded-lg transform transition-all duration-1000 hover:bg-white/10 ${
                 comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
               }`}
               style={{
-                transitionDelay: `${index * 150}ms`
+                transitionDelay: `${index * 200}ms`
               }}
             >
               <div className="text-4xl mb-3">{item.icon}</div>
@@ -410,7 +417,7 @@ export default function Home() {
       </div>
 
       {/* Sezione Diventa Segnalatore */}
-      <div ref={segnalatorRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+      <div ref={segnalatorRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-8 md:p-12">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold text-white mb-3">Diventa un Segnalatore</h3>
@@ -426,11 +433,11 @@ export default function Home() {
             ].map((item, index) => (
               <div
                 key={index}
-                className={`bg-white/5 p-6 rounded-lg text-center transform transition-all duration-700 ${
+                className={`bg-white/5 p-6 rounded-lg text-center transform transition-all duration-1000 ${
                   segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 }`}
                 style={{
-                  transitionDelay: `${index * 150}ms`
+                  transitionDelay: `${index * 200}ms`
                 }}
               >
                 <div className="text-3xl mb-2">{item.icon}</div>
@@ -451,7 +458,7 @@ export default function Home() {
       </div>
 
       {/* Sezione Contatti */}
-      <div ref={contactRef} className={`max-w-7xl mx-auto px-6 py-12 mb-12 transform transition-all duration-700 ${contactInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+      <div ref={contactRef} className={`max-w-7xl mx-auto px-6 py-12 mb-12 transform transition-all duration-1000 ${contactInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="bg-blue-600 text-white p-8 rounded-lg">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold mb-4 text-center">Contattaci</h2>
@@ -603,6 +610,99 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Modal Proprietà */}
+      {selectedProperty && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedProperty(null)} />
+          <div className="relative max-w-3xl w-full bg-white rounded-lg shadow-lg overflow-auto max-h-[90vh]">
+            {selectedProperty.immagini && selectedProperty.immagini.length > 0 && (
+              <img
+                src={selectedProperty.immagini[0]}
+                alt={selectedProperty.titolo}
+                className="w-full h-64 object-cover rounded-t-lg"
+              />
+            )}
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProperty.titolo}</h2>
+                  <p className="text-lg text-gray-600">{selectedProperty.tipo} - {selectedProperty.citta}</p>
+                  {selectedProperty.indirizzo && (
+                    <p className="text-sm text-gray-500">{selectedProperty.indirizzo}</p>
+                  )}
+                </div>
+                <div className="text-right">
+                  <span className="text-3xl font-bold text-blue-600">
+                    €{selectedProperty.prezzo.toLocaleString()}
+                  </span>
+                  {selectedProperty.in_evidenza && (
+                    <div className="mt-2">
+                      <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                        In Evidenza
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+                <div className="bg-gray-50 p-3 rounded">
+                  <span className="font-medium">Camere</span>
+                  <p className="text-lg">{selectedProperty.camere || 'N/A'}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <span className="font-medium">Bagni</span>
+                  <p className="text-lg">{selectedProperty.bagni || 'N/A'}</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <span className="font-medium">Superficie</span>
+                  <p className="text-lg">{selectedProperty.superficie} m²</p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded">
+                  <span className="font-medium">Piano</span>
+                  <p className="text-lg">{selectedProperty.piano !== null ? selectedProperty.piano : 'N/A'}</p>
+                </div>
+              </div>
+              
+              {selectedProperty.descrizione && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3">Descrizione</h3>
+                  <p className="text-gray-600 leading-relaxed">{selectedProperty.descrizione}</p>
+                </div>
+              )}
+              
+              {selectedProperty.caratteristiche && selectedProperty.caratteristiche.length > 0 && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-3">Caratteristiche</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProperty.caratteristiche.map((caratteristica, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full">
+                        {caratteristica}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="flex justify-between items-center pt-4 border-t">
+                <Link 
+                  to="/proprieta-vendita"
+                  className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors"
+                >
+                  Vedi tutte le Proprietà
+                </Link>
+                <button 
+                  onClick={() => setSelectedProperty(null)} 
+                  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                >
+                  Chiudi
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
