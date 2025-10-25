@@ -8,13 +8,23 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
   const [preview, setPreview] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null); // full article
   const [panelLoading, setPanelLoading] = useState(false);
   const heroRef = useRef(null);
   const previewRef = useRef(null);
+  const propertiesRef = useRef(null);
+  const comeLavoriamoRef = useRef(null);
+  const segnalatorRef = useRef(null);
+  const contactRef = useRef(null);
+  
   // start hidden so the entrance transition runs on initial page load
   const [heroInView, setHeroInView] = useState(false);
   const [previewInView, setPreviewInView] = useState(false);
+  const [propertiesInView, setPropertiesInView] = useState(false);
+  const [comeLavoriamoInView, setComeLavoriamoInView] = useState(false);
+  const [segnalatorInView, setSegnalatorInView] = useState(false);
+  const [contactInView, setContactInView] = useState(false);
   const [logoAnimate, setLogoAnimate] = useState(false);
 
   useEffect(() => {
@@ -27,7 +37,19 @@ export default function Home() {
         .limit(3);
       if (!error && data) setPreview(data);
     };
+    
+    const fetchProperties = async () => {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("id,titolo,prezzo,citta,tipo,immagini,superficie,camere,bagni,in_evidenza")
+        .eq("disponibile", true)
+        .order("created_at", { ascending: false })
+        .limit(3);
+      if (!error && data) setProperties(data);
+    };
+    
     fetchPreview();
+    fetchProperties();
   }, []);
 
   // close panel on Escape
@@ -103,19 +125,31 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const previewEl = previewRef.current;
-    if (previewEl) {
-      const pObs = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            setPreviewInView(entry.isIntersecting);
-          });
-        },
-        { threshold: 0.12 }
-      );
-      pObs.observe(previewEl);
-      return () => pObs.disconnect();
-    }
+    const observers = [];
+    
+    const sections = [
+      { ref: previewRef, setter: setPreviewInView },
+      { ref: propertiesRef, setter: setPropertiesInView },
+      { ref: comeLavoriamoRef, setter: setComeLavoriamoInView },
+      { ref: segnalatorRef, setter: setSegnalatorInView },
+      { ref: contactRef, setter: setContactInView }
+    ];
+
+    sections.forEach(({ ref, setter }) => {
+      const el = ref.current;
+      if (el) {
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => setter(entry.isIntersecting));
+          },
+          { threshold: 0.12 }
+        );
+        obs.observe(el);
+        observers.push(obs);
+      }
+    });
+
+    return () => observers.forEach(obs => obs.disconnect());
   }, []);
 
   // on mount animate logo briefly
@@ -243,17 +277,22 @@ export default function Home() {
   <div ref={previewRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-white">Blog Immobili</h3>
-          <Link to="/blog" className="text-sm text-slate-300 hover:text-white">
-            Vedi tutti
+          <Link to="/blog" className="text-sm text-slate-300 hover:text-white transition-colors">
+            Vedi tutti →
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {preview.map((a) => (
+          {preview.map((a, index) => (
             <button
               key={a.id}
               type="button"
               onClick={() => openArticlePanel(a)}
-              className="text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-300 ease-out hover:scale-103 hover:-translate-y-1 hover:shadow-2xl focus:scale-103 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400"
+              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
+                previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+              style={{
+                transitionDelay: `${index * 150}ms`
+              }}
             >
               {a.image ? (
                 <img
@@ -277,6 +316,291 @@ export default function Home() {
               </div>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Preview Proprietà */}
+      <div ref={propertiesRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-white">Proprietà in Vendita</h3>
+          <Link to="/proprieta-vendita" className="text-sm text-slate-300 hover:text-white transition-colors">
+            Vedi tutte →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {properties.map((prop, index) => (
+            <Link
+              key={prop.id}
+              to="/proprieta-vendita"
+              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-700 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl ${
+                propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+              style={{
+                transitionDelay: `${index * 150}ms`
+              }}
+            >
+              {prop.immagini && prop.immagini.length > 0 ? (
+                <img
+                  src={prop.immagini[0]}
+                  alt={prop.titolo}
+                  className="w-full h-36 object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-36 bg-white/3 flex items-center justify-center text-slate-300">
+                  No image
+                </div>
+              )}
+              <div className="p-3">
+                <div className="flex justify-between items-start mb-2">
+                  <h4 className="text-sm font-semibold text-white line-clamp-2">
+                    {prop.titolo}
+                  </h4>
+                  {prop.in_evidenza && (
+                    <span className="ml-2 inline-block bg-yellow-500/20 text-yellow-300 text-xs px-2 py-0.5 rounded-full flex-shrink-0">
+                      ★
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-400 mb-2">{prop.tipo} - {prop.citta}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-bold text-blue-400">
+                    €{prop.prezzo.toLocaleString()}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {prop.superficie}m² • {prop.camere} cam
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* Sezione Come Lavoriamo */}
+      <div ref={comeLavoriamoRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-white">Il Nostro Metodo</h3>
+          <Link to="/come-lavoriamo" className="text-sm text-slate-300 hover:text-white transition-colors">
+            Scopri di più →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { icon: '🔍', title: 'Analisi', desc: 'Studio approfondito del mercato immobiliare locale' },
+            { icon: '💎', title: 'Valutazione', desc: 'Perizie professionali per determinare il valore reale' },
+            { icon: '🎯', title: 'Strategia', desc: 'Piano personalizzato su misura per ogni cliente' },
+            { icon: '🤝', title: 'Supporto', desc: 'Assistenza completa in ogni fase del processo' }
+          ].map((item, index) => (
+            <div
+              key={index}
+              className={`bg-white/5 p-6 rounded-lg transform transition-all duration-700 hover:bg-white/10 ${
+                comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+              style={{
+                transitionDelay: `${index * 150}ms`
+              }}
+            >
+              <div className="text-4xl mb-3">{item.icon}</div>
+              <h4 className="text-white font-semibold mb-2">{item.title}</h4>
+              <p className="text-sm text-slate-300">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Sezione Diventa Segnalatore */}
+      <div ref={segnalatorRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-8 md:p-12">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-white mb-3">Diventa un Segnalatore</h3>
+            <p className="text-slate-300 max-w-2xl mx-auto">
+              Unisciti alla nostra rete di collaboratori e guadagna commissioni competitive segnalando proprietà
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {[
+              { icon: '💰', title: 'Commissioni', desc: 'Guadagni competitivi per ogni segnalazione' },
+              { icon: '🤝', title: 'Supporto', desc: 'Strumenti e assistenza dedicata' },
+              { icon: '⏰', title: 'Flessibilità', desc: 'Lavora nei tuoi tempi' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                className={`bg-white/5 p-6 rounded-lg text-center transform transition-all duration-700 ${
+                  segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{
+                  transitionDelay: `${index * 150}ms`
+                }}
+              >
+                <div className="text-3xl mb-2">{item.icon}</div>
+                <h4 className="text-white font-semibold mb-1">{item.title}</h4>
+                <p className="text-sm text-slate-300">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Link
+              to="/diventa-segnalatore"
+              className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-300"
+            >
+              Inizia Ora
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Sezione Contatti */}
+      <div ref={contactRef} className={`max-w-7xl mx-auto px-6 py-12 mb-12 transform transition-all duration-700 ${contactInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="bg-blue-600 text-white p-8 rounded-lg">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4 text-center">Contattaci</h2>
+            <p className="text-lg mb-8 text-center">
+              Hai domande o vuoi maggiori informazioni? Siamo qui per aiutarti
+            </p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Sezione Contatti */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold mb-4">I Nostri Contatti</h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium">Email</p>
+                      <a href="mailto:info@tuodominio.com" className="text-blue-100 hover:text-white transition-colors">
+                        info@tuodominio.com
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium">Telefono</p>
+                      <a href="tel:+393333333333" className="text-blue-100 hover:text-white transition-colors">
+                        +39 333 333 3333
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium">Indirizzo</p>
+                      <p className="text-blue-100">Via Roma 123, Milano</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-white/20 p-2 rounded-full">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-medium">Orari</p>
+                      <p className="text-blue-100">Lun-Ven: 9:00-18:00</p>
+                      <p className="text-blue-100">Sab: 9:00-13:00</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Form di Contatto */}
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Invia un Messaggio</h3>
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const data = Object.fromEntries(formData);
+                    
+                    const subject = 'Richiesta informazioni dal sito web';
+                    const body = `Nome: ${data.nome}\n` +
+                      `Email: ${data.email}\n` +
+                      `Telefono: ${data.telefono || 'Non fornito'}\n\n` +
+                      `Messaggio:\n${data.messaggio}`;
+                    
+                    window.location.href = `mailto:info@tuodominio.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                  }}
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-white mb-1">
+                        Nome *
+                      </label>
+                      <input
+                        type="text"
+                        name="nome"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-white mb-1">
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-900"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-1">
+                      Telefono
+                    </label>
+                    <input
+                      type="tel"
+                      name="telefono"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-900"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-white mb-1">
+                      Messaggio *
+                    </label>
+                    <textarea
+                      name="messaggio"
+                      rows="4"
+                      required
+                      placeholder="Come possiamo aiutarti?"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-900"
+                    />
+                  </div>
+                  
+                  <div className="text-center">
+                    <button
+                      type="submit"
+                      className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                    >
+                      Invia Messaggio
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
