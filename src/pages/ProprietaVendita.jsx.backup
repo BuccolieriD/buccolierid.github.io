@@ -1,0 +1,639 @@
+import React, { useState, useEffect } from 'react';
+import NavBar from '../components/NavBar';
+import sfondo from '../asset/sfondobackground.png';
+import supabase from '../lib/supabaseClient';
+import { useSelector } from 'react-redux';
+import PropertyForm from '../components/PropertyForm';
+
+// Componente per il modale della proprietà
+const PropertyModal = ({ property, onClose, onImageClick }) => {
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  if (!property) return null;
+
+  const images = property.immagini || [];
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="relative">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100"
+          >
+            ✕
+          </button>
+          
+          {images.length > 0 && (
+            <div className="relative h-80">
+              <img
+                src={images[currentImageIndex]}
+                alt={property.titolo}
+                className="w-full h-full object-cover rounded-t-lg cursor-pointer"
+                onClick={() => onImageClick(images[currentImageIndex])}
+              />
+              
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={prevImage}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 rounded-full p-2 hover:bg-opacity-100"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={nextImage}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-80 rounded-full p-2 hover:bg-opacity-100"
+                  >
+                    ›
+                  </button>
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-sm">
+                    {currentImageIndex + 1} / {images.length}
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+          
+          <div className="p-6">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">{property.titolo}</h2>
+                <p className="text-gray-600">{property.tipo} - {property.citta}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-blue-600">
+                  €{property.prezzo.toLocaleString()}
+                </div>
+                {property.in_evidenza && (
+                  <span className="inline-block bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full mt-2">
+                    In Evidenza
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <p className="text-gray-700 mb-6">{property.descrizione}</p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div className="text-center p-3 bg-gray-50 rounded">
+                <div className="text-xl font-semibold">{property.camere || 0}</div>
+                <div className="text-sm text-gray-600">Camere</div>
+              </div>
+              <div className="text-center p-3 bg-gray-50 rounded">
+                <div className="text-xl font-semibold">{property.bagni || 0}</div>
+                <div className="text-sm text-gray-600">Bagni</div>
+              </div>
+              <div className="text-center p-3 bg-gray-50 rounded">
+                <div className="text-xl font-semibold">{property.superficie}</div>
+                <div className="text-sm text-gray-600">m²</div>
+              </div>
+              {property.garage && (
+                <div className="text-center p-3 bg-gray-50 rounded">
+                  <div className="text-xl font-semibold">✓</div>
+                  <div className="text-sm text-gray-600">Garage</div>
+                </div>
+              )}
+            </div>
+            
+            {property.caratteristiche && property.caratteristiche.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Caratteristiche</h3>
+                <div className="flex flex-wrap gap-2">
+                  {property.caratteristiche.map((caratteristica, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                    >
+                      {caratteristica}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="flex space-x-4">
+              <button
+                onClick={onClose}
+                className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded hover:bg-gray-300 transition-colors"
+              >
+                Chiudi
+              </button>
+              <button className="flex-1 bg-blue-600 text-white py-3 px-6 rounded hover:bg-blue-700 transition-colors">
+                Contatta per Info
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente per la conferma di eliminazione
+const ConfirmModal = ({ isOpen, onConfirm, onCancel, message }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+        <h3 className="text-lg font-semibold mb-4 text-center">Conferma Eliminazione</h3>
+        <p className="text-gray-600 text-center mb-6">{message}</p>
+        <div className="flex space-x-4">
+          <button
+            onClick={onCancel}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+          >
+            Annulla
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+          >
+            Elimina
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Componente per la visualizzazione fullscreen dell'immagine
+const FullscreenImage = ({ imageUrl, onClose }) => {
+  if (!imageUrl) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="relative max-w-full max-h-full p-4">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-70"
+        >
+          ✕
+        </button>
+        <img
+          src={imageUrl}
+          alt="Fullscreen view"
+          className="max-w-full max-h-full object-contain"
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
+    </div>
+  );
+};
+
+const ProprietaVendita = () => {
+  const [filtri, setFiltri] = useState({
+    tipo: '',
+    prezzo: '',
+    citta: '',
+    camere: '',
+    superficieDa: '',
+    superficieA: ''
+  });
+
+  const [proprieta, setProprieta] = useState([]);
+  const [tipiDisponibili, setTipiDisponibili] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [editingProperty, setEditingProperty] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [fullscreenImage, setFullscreenImage] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState({ isOpen: false, propertyId: null });
+  
+  // Paginazione
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 6;
+
+  const user = useSelector((state) => state.auth.user);
+  const adminEmail = process.env.REACT_APP_ADMIN_EMAIL;
+
+  // Fetch proprietà da Supabase
+  const fetchProprieta = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('properties')
+      .select('*')
+      .eq('disponibile', true)
+      .order('created_at', { ascending: false }); // Ordinamento per data aggiunta (più recenti prima)
+    
+    if (error) {
+      console.error('Errore nel caricamento proprietà:', error);
+      setProprieta([]);
+      setTipiDisponibili([]);
+    } else {
+      setProprieta(data || []);
+      // Estrai tutti i tipi unici dalle proprietà caricate
+      const tipi = [...new Set((data || []).map(prop => prop.tipo))].sort();
+      setTipiDisponibili(tipi);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProprieta();
+
+    // Realtime subscription per le proprietà
+    const channel = supabase
+      .channel('public:properties')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'properties' },
+        () => fetchProprieta()
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {}
+    };
+  }, []);
+
+  // Gestione eliminazione proprietà
+  const handleDelete = async (id) => {
+    setConfirmDelete({ isOpen: true, propertyId: id });
+  };
+
+  const confirmDeleteProperty = async () => {
+    const id = confirmDelete.propertyId;
+    setDeletingId(id);
+    try {
+      const { error } = await supabase
+        .from('properties')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      
+      console.log('Proprietà eliminata con successo');
+      fetchProprieta();
+    } catch (err) {
+      console.error('Errore durante l\'eliminazione:', err.message);
+    } finally {
+      setDeletingId(null);
+      setConfirmDelete({ isOpen: false, propertyId: null });
+    }
+  };
+  };
+
+  const handleFiltroChange = (e) => {
+    setFiltri({
+      ...filtri,
+      [e.target.name]: e.target.value
+    });
+    // Reset alla prima pagina quando cambiano i filtri
+    setCurrentPage(1);
+  };
+
+  const proprietaFiltrate = proprieta.filter(prop => {
+    // Filtro tipo
+    const tipoMatch = filtri.tipo === '' || prop.tipo === filtri.tipo;
+    
+    // Filtro città
+    const cittaMatch = filtri.citta === '' || prop.citta.toLowerCase().includes(filtri.citta.toLowerCase());
+    
+    // Filtro camere
+    const camereMatch = filtri.camere === '' || prop.camere?.toString() === filtri.camere;
+    
+    // Filtro prezzo
+    const prezzoMatch = filtri.prezzo === '' || 
+      (filtri.prezzo === '0-200' && prop.prezzo <= 200000) ||
+      (filtri.prezzo === '200-300' && prop.prezzo > 200000 && prop.prezzo <= 300000) ||
+      (filtri.prezzo === '300-500' && prop.prezzo > 300000 && prop.prezzo <= 500000) ||
+      (filtri.prezzo === '500+' && prop.prezzo > 500000);
+    
+    // Filtro superficie Da-A
+    const superficieDaMatch = filtri.superficieDa === '' || prop.superficie >= parseInt(filtri.superficieDa);
+    const superficieAMatch = filtri.superficieA === '' || prop.superficie <= parseInt(filtri.superficieA);
+    
+    return tipoMatch && cittaMatch && camereMatch && prezzoMatch && superficieDaMatch && superficieAMatch;
+  });
+
+  // Calcolo paginazione
+  const totalPages = Math.ceil(proprietaFiltrate.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const proprietaPaginate = proprietaFiltrate.slice(startIndex, endIndex);
+
+  // Funzioni paginazione
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  };
+
+  return (
+    <div className="min-h-screen">
+      <NavBar current="Proprietà in Vendita" />
+      
+      <div
+        className="bg-gray-900 pb-20 relative"
+        style={{
+          backgroundImage: `url(${sfondo})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* darker veil to improve title/nav contrast */}
+        <div aria-hidden className="absolute inset-0 bg-black/50 pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto py-12 px-6 flex items-center justify-center relative z-10">
+          <h1 className="text-5xl pt-14 font-bold text-white text-center">Proprietà in Vendita</h1>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-6 py-16">
+        {/* Filtri */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Filtra le Proprietà</h2>
+            {user && user.email === adminEmail && (
+              <button
+                onClick={() => setEditingProperty({})}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+              >
+                + Aggiungi Proprietà
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo</label>
+              <select
+                name="tipo"
+                value={filtri.tipo}
+                onChange={handleFiltroChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Tutti i tipi</option>
+                {tipiDisponibili.map(tipo => (
+                  <option key={tipo} value={tipo}>{tipo}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Prezzo (€)</label>
+              <select
+                name="prezzo"
+                value={filtri.prezzo}
+                onChange={handleFiltroChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Tutti i prezzi</option>
+                <option value="0-200">0 - 200.000</option>
+                <option value="200-300">200.000 - 300.000</option>
+                <option value="300-500">300.000 - 500.000</option>
+                <option value="500+">500.000+</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Superficie Da (mq)</label>
+              <input
+                type="number"
+                name="superficieDa"
+                value={filtri.superficieDa}
+                onChange={handleFiltroChange}
+                min="0"
+                placeholder="Min mq"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Superficie A (mq)</label>
+              <input
+                type="number"
+                name="superficieA"
+                value={filtri.superficieA}
+                onChange={handleFiltroChange}
+                min="0"
+                placeholder="Max mq"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Città</label>
+              <input
+                type="text"
+                name="citta"
+                value={filtri.citta}
+                onChange={handleFiltroChange}
+                placeholder="Cerca per città..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Camere</label>
+              <select
+                name="camere"
+                value={filtri.camere}
+                onChange={handleFiltroChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Qualsiasi</option>
+                <option value="1">1 camera</option>
+                <option value="2">2 camere</option>
+                <option value="3">3 camere</option>
+                <option value="4">4+ camere</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Risultati */}
+        <div className="mb-6">
+          <p className="text-gray-600">
+            Trovate <span className="font-semibold">{proprietaFiltrate.length}</span> proprietà
+          </p>
+        </div>
+
+        {/* Grid delle proprietà */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {proprietaPaginate.map((prop, index) => (
+            <div 
+              key={prop.id} 
+              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 opacity-0 translate-y-8 animate-fadeInUp"
+              style={{
+                animationDelay: `${index * 200}ms`,
+                animationFillMode: 'forwards'
+              }}
+            >
+              {prop.immagini && prop.immagini.length > 0 ? (
+                <img
+                  src={prop.immagini[0]}
+                  alt={prop.titolo}
+                  className="w-full h-48 object-cover cursor-pointer"
+                  onClick={() => setSelectedProperty(prop)}
+                />
+              ) : (
+                <div className="w-full h-48 bg-gradient-to-br from-slate-100 to-slate-50 flex items-center justify-center text-slate-400 cursor-pointer"
+                     onClick={() => setSelectedProperty(prop)}>
+                  No image
+                </div>
+              )}
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold line-clamp-2 cursor-pointer hover:text-blue-600"
+                        onClick={() => setSelectedProperty(prop)}>
+                      {prop.titolo}
+                    </h3>
+                    <p className="text-sm text-gray-500">{prop.tipo} - {prop.citta}</p>
+                  </div>
+                  <div className="text-right ml-2">
+                    <span className="text-xl font-bold text-blue-600">
+                      €{prop.prezzo.toLocaleString()}
+                    </span>
+                    {prop.in_evidenza && (
+                      <div className="mt-1">
+                        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                          In Evidenza
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-4 text-sm line-clamp-2">{prop.descrizione}</p>
+                
+                <div className="flex justify-between text-sm text-gray-500 mb-4">
+                  <span>{prop.camere || 0} camere</span>
+                  <span>{prop.bagni || 0} bagni</span>
+                  <span>{prop.superficie} m²</span>
+                </div>
+                
+                {prop.caratteristiche && prop.caratteristiche.length > 0 && (
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-1">
+                      {prop.caratteristiche.slice(0, 3).map((car, idx) => (
+                        <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                          {car}
+                        </span>
+                      ))}
+                      {prop.caratteristiche.length > 3 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+                          +{prop.caratteristiche.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => setSelectedProperty(prop)}
+                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Maggiori Info
+                  </button>
+                  
+                  {user && user.email === adminEmail && (
+                    <>
+                      <button 
+                        onClick={() => setEditingProperty(prop)}
+                        className="px-3 py-2 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition-colors text-sm"
+                      >
+                        Modifica
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(prop.id)}
+                        disabled={deletingId === prop.id}
+                        className="px-3 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50 transition-colors text-sm disabled:opacity-50"
+                      >
+                        {deletingId === prop.id ? '...' : 'Elimina'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {proprietaFiltrate.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🏠</div>
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">Nessuna proprietà trovata</h3>
+            <p className="text-gray-500">Prova a modificare i filtri di ricerca</p>
+          </div>
+        )}
+
+        {/* Call to Action */}
+        <div className="mt-16 bg-blue-600 text-white p-8 rounded-lg text-center">
+          <h2 className="text-2xl font-bold mb-4">Non trovi quello che cerchi?</h2>
+          <p className="text-lg mb-6">
+            Il nostro team di esperti può aiutarti a trovare la proprietà perfetta per le tue esigenze
+          </p>
+          <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            Contatta un Consulente
+          </button>
+        </div>
+      </main>
+
+      {/* Modal della proprietà */}
+      {selectedProperty && (
+        <PropertyModal
+          property={selectedProperty}
+          onClose={() => setSelectedProperty(null)}
+          onImageClick={(imageUrl) => setFullscreenImage(imageUrl)}
+        />
+      )}
+
+      {/* Form di editing/creazione */}
+      {editingProperty && (
+        <PropertyForm
+          isOpen={!!editingProperty}
+          onClose={() => setEditingProperty(null)}
+          propertyToEdit={editingProperty.id ? editingProperty : null}
+          onPropertySaved={() => {
+            fetchProprieta();
+            setEditingProperty(null);
+          }}
+        />
+      )}
+
+      {/* Immagine fullscreen */}
+      {fullscreenImage && (
+        <FullscreenImage
+          imageUrl={fullscreenImage}
+          onClose={() => setFullscreenImage(null)}
+        />
+      )}
+
+      {/* Modal di conferma eliminazione */}
+      <ConfirmModal
+        isOpen={confirmDelete.isOpen}
+        onConfirm={confirmDeleteProperty}
+        onCancel={() => setConfirmDelete({ isOpen: false, propertyId: null })}
+        message="Sei sicuro di voler eliminare questa proprietà? Questa azione non può essere annullata."
+      />
+    </div>
+  );
+};
+
+export default ProprietaVendita;
