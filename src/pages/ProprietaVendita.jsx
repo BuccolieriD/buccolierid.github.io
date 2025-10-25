@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero';
 import supabase from '../lib/supabaseClient';
 import { useSelector } from 'react-redux';
 import PropertyForm from '../components/PropertyForm';
+import { useToasts } from '../components/Toast';
 // Background dedicato (tema: esterni case/skyline real estate)
 const listingBg = 'https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1920&auto=format&fit=crop';
 
@@ -23,6 +24,7 @@ const ProprietaVendita = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [editingProperty, setEditingProperty] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(null);
   
   // Paginazione
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,6 +32,7 @@ const ProprietaVendita = () => {
 
   const user = useSelector((state) => state.auth.user);
   const adminEmail = process.env.REACT_APP_ADMIN_EMAIL;
+  const { add } = useToasts();
 
   // Fetch proprietà da Supabase
   const fetchProprieta = async () => {
@@ -75,7 +78,12 @@ const ProprietaVendita = () => {
 
   // Gestione eliminazione proprietà
   const handleDelete = async (id) => {
-    if (!window.confirm('Sei sicuro di voler eliminare questa proprietà?')) return;
+    setConfirmDeleteModal(id);
+  };
+
+  const confirmDelete = async () => {
+    const id = confirmDeleteModal;
+    setConfirmDeleteModal(null);
     
     setDeletingId(id);
     try {
@@ -86,10 +94,10 @@ const ProprietaVendita = () => {
       
       if (error) throw error;
       
-      console.log('Proprietà eliminata con successo');
+      add('Proprietà eliminata con successo', 'success');
       fetchProprieta();
     } catch (err) {
-      console.error('Errore durante l\'eliminazione:', err.message);
+      add('Errore durante l\'eliminazione: ' + err.message, 'error');
     } finally {
       setDeletingId(null);
     }
@@ -155,54 +163,68 @@ const ProprietaVendita = () => {
   // Modale per visualizzazione dettagliata proprietà
   const PropertyModal = ({ property, onClose }) => {
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [fullscreenImage, setFullscreenImage] = useState(null);
     
     if (!property) return null;
     
     const immagini = property.immagini && property.immagini.length > 0 ? property.immagini : [];
     
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-        <div className="relative max-w-4xl w-full bg-white rounded-lg shadow-lg overflow-auto max-h-[90vh]">
-          {immagini.length > 0 && (
-            <div className="relative">
-              <img
-                src={immagini[selectedImageIndex]}
-                alt={property.titolo}
-                className="w-full h-64 md:h-80 object-cover"
-              />
-              {immagini.length > 1 && (
-                <>
-                  {/* Frecce navigazione */}
-                  <button
-                    onClick={() => setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : immagini.length - 1)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-                  >
-                    ←
-                  </button>
-                  <button
-                    onClick={() => setSelectedImageIndex(selectedImageIndex < immagini.length - 1 ? selectedImageIndex + 1 : 0)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70"
-                  >
-                    →
-                  </button>
-                  
-                  {/* Indicator dots */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                    {immagini.map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImageIndex(index)}
-                        className={`w-3 h-3 rounded-full ${
-                          index === selectedImageIndex ? 'bg-white' : 'bg-white/50'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+      <>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+          <div className="relative max-w-4xl w-full bg-white rounded-lg shadow-lg overflow-auto max-h-[90vh]">
+            {immagini.length > 0 && (
+              <div className="relative">
+                <img
+                  src={immagini[selectedImageIndex]}
+                  alt={property.titolo}
+                  className="w-full h-64 md:h-96 object-cover cursor-zoom-in transition-transform hover:scale-[1.02]"
+                  onClick={() => setFullscreenImage(immagini[selectedImageIndex])}
+                />
+                {immagini.length > 1 && (
+                  <>
+                    {/* Frecce navigazione */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex(selectedImageIndex > 0 ? selectedImageIndex - 1 : immagini.length - 1);
+                      }}
+                      className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-all"
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedImageIndex(selectedImageIndex < immagini.length - 1 ? selectedImageIndex + 1 : 0);
+                      }}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 transition-all"
+                    >
+                      →
+                    </button>
+                    
+                    {/* Thumbnails carosello sotto */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 bg-black/40 px-4 py-2 rounded-full">
+                      {immagini.map((img, index) => (
+                        <button
+                          key={index}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedImageIndex(index);
+                          }}
+                          className={`w-16 h-12 rounded overflow-hidden border-2 transition-all ${
+                            index === selectedImageIndex ? 'border-white scale-110' : 'border-white/50 opacity-70 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={img} alt={`Thumb ${index + 1}`} className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           <div className="p-6">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -325,6 +347,28 @@ const ProprietaVendita = () => {
           </div>
         </div>
       </div>
+      
+      {/* Modal fullscreen per immagine */}
+      {fullscreenImage && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-4 right-4 text-white text-4xl hover:text-gray-300 transition-colors"
+          >
+            ×
+          </button>
+          <img
+            src={fullscreenImage}
+            alt="Fullscreen"
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
     );
   };
 
@@ -460,7 +504,7 @@ const ProprietaVendita = () => {
                   key={prop.id} 
                   className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 opacity-0 translate-y-8 animate-fadeInUp"
                   style={{
-                    animationDelay: `${index * 200}ms`,
+                    animationDelay: `${index * 350}ms`,
                     animationFillMode: 'forwards'
                   }}
                 >
@@ -827,6 +871,33 @@ const ProprietaVendita = () => {
 
       {/* Modale per visualizzazione proprietà */}
       <PropertyModal property={selectedProperty} onClose={() => setSelectedProperty(null)} />
+      
+      {/* Modal conferma eliminazione */}
+      {confirmDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setConfirmDeleteModal(null)} />
+          <div className="relative bg-white rounded-lg shadow-xl p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Conferma Eliminazione</h3>
+            <p className="text-gray-600 mb-6">
+              Sei sicuro di voler eliminare questa proprietà? Questa azione non può essere annullata.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setConfirmDeleteModal(null)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Annulla
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
