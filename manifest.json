@@ -1,0 +1,24 @@
+{
+  "short_name": "Jackowski",
+  "name": "Jackowski Immobiliare",
+  "description": "La tua casa dei sogni ti aspetta",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#191919",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary"
+}
