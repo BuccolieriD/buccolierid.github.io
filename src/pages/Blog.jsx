@@ -5,15 +5,16 @@ import { useSelector } from 'react-redux';
 import { useToasts } from '../components/Toast';
 import OverlaySpinner from '../components/OverlaySpinner';
 import sfondo from '../asset/sfondobackground.png';
-import logo from '../asset/logo.png';
 import NavBar from '../components/NavBar';
-import { NavLink } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const Blog = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingArticle, setEditingArticle] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
   const adminEmail = process.env.REACT_APP_ADMIN_EMAIL;
@@ -59,6 +60,61 @@ const Blog = () => {
       } catch (e) {}
     };
   }, []);
+
+  // Effect per gestire l'apertura automatica dell'articolo dall'URL
+  useEffect(() => {
+    const articleId = searchParams.get('article');
+    if (articleId && articles.length > 0) {
+      // Verifica se l'articolo selezionato è già quello giusto
+      if (!selected || selected.id !== articleId) {
+        const article = articles.find(a => a.id === articleId);
+        if (article) {
+          setSelected(article);
+        } else {
+          // Articolo non trovato, rimuovi il parametro dall'URL
+          navigate('/blog', { replace: true });
+          add('Articolo non trovato', 'error');
+        }
+      }
+    } else if (!articleId && selected) {
+      // Se non c'è parametro article nell'URL ma c'è un articolo selezionato, chiudi la modale
+      setSelected(null);
+    }
+  }, [articles, searchParams, navigate, add, selected]);
+
+  // Effect per gestire la chiusura automatica se l'articolo selezionato viene eliminato
+  useEffect(() => {
+    if (selected && articles.length > 0) {
+      // Verifica se l'articolo attualmente selezionato esiste ancora nella lista
+      const articleStillExists = articles.find(a => a.id === selected.id);
+      if (!articleStillExists) {
+        // L'articolo è stato eliminato, chiudi la modale e pulisci l'URL
+        setSelected(null);
+        navigate('/blog', { replace: true });
+        add('L\'articolo che stavi visualizzando è stato eliminato', 'warning');
+      }
+    }
+  }, [articles, selected, navigate, add]);
+
+  // Genera URL diretto per un articolo
+  const getArticleDirectLink = (articleId) => {
+    // In sviluppo usa localhost, in produzione usa il dominio GitHub Pages
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://buccolierid.github.io' 
+      : window.location.origin; // Questo sarà http://localhost:3001
+    
+    return `${baseUrl}/blog?article=${articleId}`;
+  };
+
+  // Copia link negli appunti
+  const copyArticleLink = async (articleId, articleTitle) => {
+    try {
+      await navigator.clipboard.writeText(getArticleDirectLink(articleId));
+      add(`Link copiato per "${articleTitle}"`, 'success');
+    } catch (err) {
+      add('Errore durante la copia del link', 'error');
+    }
+  };
 
   // Cancella articolo e immagine
   const handleDelete = async (id, imageUrl) => {
@@ -125,9 +181,16 @@ const Blog = () => {
   // Modal visualizzazione articolo
   const ArticleModal = ({ article, onClose }) => {
     if (!article) return null;
+    
+    const handleClose = () => {
+      // Rimuovi il parametro article dall'URL quando chiudi la modale
+      navigate('/blog', { replace: true });
+      onClose();
+    };
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+        <div className="absolute inset-0 bg-black/50" onClick={handleClose} />
         <div className="relative max-w-3xl w-full bg-white rounded-lg shadow-lg overflow-auto max-h-[90vh]">
           {article.image && (
             <img
@@ -142,8 +205,19 @@ const Blog = () => {
               By {article.author} - {new Date(article.created_at).toLocaleString()}
             </p>
             <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: article.content }} />
-            <div className="mt-4 flex justify-end">
-              <button onClick={onClose} className="px-3 py-1 bg-slate-200 rounded">
+            <div className="mt-4 flex justify-between items-center">
+              {/* Pulsante copia link visibile solo se loggato */}
+              {user ? (
+                <button 
+                  onClick={() => copyArticleLink(article.id, article.title)}
+                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm hover:bg-blue-200 transition-colors"
+                >
+                  📋 Copia Link Diretto
+                </button>
+              ) : (
+                <div></div> // Spazio vuoto per mantenere il layout
+              )}
+              <button onClick={handleClose} className="px-3 py-1 bg-slate-200 rounded">
                 Chiudi
               </button>
             </div>
@@ -155,7 +229,7 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen">
-      <NavBar current="Blog" />
+      <NavBar current="Blog Immobili" />
       <div
         className="bg-gray-900 pb-20 relative"
         style={{
@@ -169,7 +243,7 @@ const Blog = () => {
         <div aria-hidden className="absolute inset-0 bg-black/50 pointer-events-none" />
 
         <div className="max-w-7xl  mx-auto py-12 px-6 flex items-center justify-center relative z-10">
-          <h1 className="text-5xl pt-14 font-bold text-white text-center">Articoli di Blog</h1>
+          <h1 className="text-5xl pt-14 font-bold text-white text-center">Blog Immobili</h1>
         </div>
       </div>
 
@@ -213,7 +287,11 @@ const Blog = () => {
             <div
               key={a.id}
               className="relative rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer bg-white"
-              onClick={() => setSelected(a)}
+              onClick={() => {
+                setSelected(a);
+                // Aggiungi l'ID dell'articolo all'URL
+                navigate(`/blog?article=${a.id}`, { replace: true });
+              }}
             >
               {a.image ? (
                 <img src={a.image} alt={a.title} className="w-full h-48 object-cover" />
@@ -228,8 +306,24 @@ const Blog = () => {
                 <p className="text-xs text-gray-200 mb-2">{a.author}</p>
                 <p className="text-sm text-white/90 line-clamp-3">{a.content.substring(0, 100)}...</p>
 
+                {/* Pulsante per copiare il link diretto (visibile solo se loggato) */}
+                {user && (
+                  <div className="mt-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        copyArticleLink(a.id, a.title);
+                      }}
+                      className="px-2 py-1 bg-white/20 backdrop-blur-sm text-white rounded text-xs mr-2"
+                      title="Copia link diretto"
+                    >
+                      📋 Copia Link
+                    </button>
+                  </div>
+                )}
+
                 {user && user.email === adminEmail && (
-                    <div className="mt-3 space-x-2">
+                    <div className="mt-2 space-x-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

@@ -9,6 +9,9 @@ import Blog from './pages/Blog';
 import Article from './pages/Article';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import ComeLavoriamo from './pages/ComeLavoriamo';
+import DiventaSegnalatore from './pages/DiventaSegnalatore';
+import ProprietaVendita from './pages/ProprietaVendita';
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/counter" element={<CounterPage />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Article />} />
+          <Route path="/come-lavoriamo" element={<ComeLavoriamo />} />
+          <Route path="/diventa-segnalatore" element={<DiventaSegnalatore />} />
+          <Route path="/proprieta-vendita" element={<ProprietaVendita />} />
           <Route path="/login" element={<Login />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

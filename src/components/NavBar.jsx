@@ -8,10 +8,10 @@ import { clearUser } from '../slices/authSlice';
 import logo from '../asset/logo.png';
 
 const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Counter', href: '/counter' },
-  { name: 'Blog', href: '/blog' },
+  { name: 'Come Lavoriamo', href: '/come-lavoriamo' },
+  { name: 'Diventa Segnalatore', href: '/diventa-segnalatore' },
+  { name: 'Blog Immobili', href: '/blog' },
+  { name: 'Proprietà in Vendita', href: '/proprieta-vendita' },
 ];
 
 const NavBar = ({ current = '' }) => {
@@ -20,6 +20,22 @@ const NavBar = ({ current = '' }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [logoutOpen, setLogoutOpen] = useState(false);
+
+  // Crea la lista di navigazione dinamica
+  const getNavigationItems = () => {
+    // Se siamo sulla homepage (current è vuoto), mostra tutti i link tranne Home
+    if (!current) {
+      return navigation;
+    }
+    
+    // Se siamo su una pagina specifica, aggiungi Home come prima voce e rimuovi la pagina corrente
+    const homeItem = { name: 'Home', href: '/' };
+    const filteredNavigation = navigation.filter(item => item.name !== current);
+    
+    return [homeItem, ...filteredNavigation];
+  };
+
+  const navigationItems = getNavigationItems();
 
   const doLogout = async () => {
     await supabase.auth.signOut();
@@ -50,12 +66,9 @@ const NavBar = ({ current = '' }) => {
         </div>
 
         <div className="hidden lg:flex lg:gap-x-12 mx-auto">
-          {navigation.map((item) => {
-            if (item.name.toLowerCase() === current.toLowerCase()) return null;
-            return (
-              <NavLink key={item.name} to={item.href} className={({ isActive }) => (isActive ? 'text-blue-600 font-semibold' : 'text-white')}>{item.name}</NavLink>
-            );
-          })}
+          {navigationItems.map((item) => (
+            <NavLink key={item.name} to={item.href} className={({ isActive }) => (isActive ? 'text-blue-600 font-semibold' : 'text-white')}>{item.name}</NavLink>
+          ))}
         </div>
 
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -80,14 +93,11 @@ const NavBar = ({ current = '' }) => {
             <div className="mt-6 flow-root">
               <div className="-my-6 divide-y divide-white/10">
                 <div className="space-y-2 py-6">
-                  {navigation.map((item) => {
-                    if (item.name.toLowerCase() === current.toLowerCase()) return null;
-                    return (
-                      <NavLink key={item.name} to={item.href} className="block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">
-                        {item.name}
-                      </NavLink>
-                    );
-                  })}
+                  {navigationItems.map((item) => (
+                    <NavLink key={item.name} to={item.href} className="block rounded-lg px-3 py-2 text-base/7 font-semibold text-white hover:bg-white/5">
+                      {item.name}
+                    </NavLink>
+                  ))}
                 </div>
                 <div className="py-6">
                   {user ? (

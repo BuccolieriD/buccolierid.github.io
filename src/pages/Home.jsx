@@ -133,7 +133,7 @@ export default function Home() {
 
   return (
     <div className="bg-gray-900">
-      <NavBar current="Home" />
+      <NavBar current="" />
 
       <div
         className="relative isolate px-6 pt-14 lg:px-8"
@@ -242,7 +242,7 @@ export default function Home() {
   {/* Preview articoli */}
   <div ref={previewRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-700 ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-white">Articoli di Blog</h3>
+          <h3 className="text-xl font-semibold text-white">Blog Immobili</h3>
           <Link to="/blog" className="text-sm text-slate-300 hover:text-white">
             Vedi tutti
           </Link>
