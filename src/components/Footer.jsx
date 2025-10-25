@@ -4,21 +4,20 @@ import logo from '../asset/logo.png';
 
 export default function Footer() {
   const pages = [
-    { to: '/', label: 'Home' },
-    { to: '/about', label: 'About' },
     { to: '/blog', label: 'Blog' },
-    { to: '/counter', label: 'Counter' },
-    { to: '/login', label: 'Login' },
+    { to: '/proprieta-vendita', label: 'Proprietà' },
+    { to: '/come-lavoriamo', label: 'Come Lavoriamo' },
+    { to: '/diventa-segnalatore', label: 'Diventa Segnalatore' },
   ];
 
   return (
-    <footer className="bg-gray-900 text-slate-200 mt-8">
+    <footer className="text-slate-200 mt-8" style={{ backgroundColor: '#191919' }}>
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-6">
           {/* left: logo */}
           <div className="flex items-center gap-3 justify-center md:justify-start">
             <Link to="/">
-              <img src={logo} alt="logo" className="h-10 w-auto" />
+              <img src={logo} alt="logo" className="h-28 w-auto" />
             </Link>
           </div>
 

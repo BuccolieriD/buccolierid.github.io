@@ -1,6 +1,5 @@
-# react-cra-router-redux-tailwind-supabase
+# Jackowski Immobiliare
 
-Project scaffold generated for Create React App with Supabase blog support.
-Includes React Router, Redux Toolkit, Tailwind, and Supabase integration.
+Progetto immobiliare sviluppato con Create React App, Supabase, React Router, Redux Toolkit e Tailwind CSS.
 
-Follow instructions in .env.example and README to setup Supabase.
+Piattaforma completa per la gestione e visualizzazione di proprietà immobiliari con sistema di blog integrato.

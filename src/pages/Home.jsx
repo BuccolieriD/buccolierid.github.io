@@ -172,7 +172,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="bg-gray-900">
+    <div style={{ backgroundColor: '#191919' }}>
       <NavBar current="" />
 
       <div
@@ -207,7 +207,7 @@ export default function Home() {
             <img
               alt="Company Logo"
               src={logo}
-              className={`h-[12vh] w-auto transform transition-all duration-1000 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0 scale-105' : 'opacity-0 translate-y-2 scale-95'}`}
+              className={`h-[32vh] w-auto transform transition-all duration-1000 ${(heroInView || logoAnimate) ? 'opacity-100 translate-y-0 scale-105' : 'opacity-0 translate-y-2 scale-95'}`}
             />
           </div>
           <div className="text-center">
@@ -280,10 +280,11 @@ export default function Home() {
       )}
 
   {/* Preview articoli */}
-  <div ref={previewRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-white">Blog Immobili</h3>
-          <Link to="/blog" className="text-sm text-slate-300 hover:text-white transition-colors">
+  <div className="bg-white py-16">
+  <div ref={previewRef} className={`max-w-7xl mx-auto px-6 transform transition-all duration-[1800ms] ${previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-3xl font-bold text-gray-900">Blog Immobiliare</h3>
+          <Link to="/blog" className="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-300 font-medium">
             Vedi tutti →
           </Link>
         </div>
@@ -293,9 +294,9 @@ export default function Home() {
               key={a.id}
               type="button"
               onClick={() => openArticlePanel(a)}
-              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
+              className={`text-left block bg-white rounded-2xl overflow-hidden shadow-lg transform transition-all duration-[1800ms] ease-out hover:shadow-2xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 border border-gray-100 ${
                 previewInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+              } hover:scale-105 hover:-translate-y-2 focus:scale-105 focus:-translate-y-2 transition-transform duration-300`}
               style={{
                 transitionDelay: `${index * 200}ms`
               }}
@@ -304,19 +305,19 @@ export default function Home() {
                 <img
                   src={a.image}
                   alt={a.title}
-                    className="w-full h-36 object-cover"
+                    className="w-full h-36 object-cover transition-transform duration-300 hover:scale-110"
                     loading="lazy"
                 />
               ) : (
-                <div className="w-full h-36 bg-white/3 flex items-center justify-center text-slate-300">
+                <div className="w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400">
                   No image
                 </div>
               )}
-              <div className="p-3">
-                <h4 className="text-sm font-semibold text-white line-clamp-2">
+              <div className="p-4">
+                <h4 className="text-base font-bold text-gray-900 line-clamp-2 mb-2">
                   {a.title}
                 </h4>
-                <p className="mt-2 text-xs text-slate-300 line-clamp-3">
+                <p className="mt-2 text-sm text-gray-600 line-clamp-3">
                   {a.excerpt || a.title}
                 </p>
               </div>
@@ -324,12 +325,14 @@ export default function Home() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Preview Proprietà */}
-      <div ref={propertiesRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-white">Proprietà in Vendita</h3>
-          <Link to="/proprieta-vendita" className="text-sm text-slate-300 hover:text-white transition-colors">
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-16">
+        <div ref={propertiesRef} className={`max-w-7xl mx-auto px-6 transform transition-all duration-[1800ms] ${propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-3xl font-bold text-gray-900">Proprietà in Vendita</h3>
+          <Link to="/proprieta-vendita" className="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-300 font-medium">
             Vedi tutte →
           </Link>
         </div>
@@ -339,9 +342,9 @@ export default function Home() {
               key={prop.id}
               type="button"
               onClick={() => setSelectedProperty(prop)}
-              className={`text-left block bg-white/5 rounded-lg overflow-hidden shadow-md transform transition-all duration-1000 ease-out hover:scale-105 hover:-translate-y-1 hover:shadow-2xl focus:scale-105 focus:-translate-y-1 focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400 ${
+              className={`text-left block bg-white rounded-2xl overflow-hidden shadow-lg transform transition-all duration-[1800ms] ease-out hover:shadow-2xl focus:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 border border-gray-100 ${
                 propertiesInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+              } hover:scale-105 hover:-translate-y-2 focus:scale-105 focus:-translate-y-2 transition-transform duration-300`}
               style={{
                 transitionDelay: `${index * 200}ms`
               }}
@@ -350,31 +353,31 @@ export default function Home() {
                 <img
                   src={prop.immagini[0]}
                   alt={prop.titolo}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-36 object-cover transition-transform duration-300 hover:scale-110"
                   loading="lazy"
                 />
               ) : (
-                <div className="w-full h-36 bg-white/3 flex items-center justify-center text-slate-300">
+                <div className="w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400">
                   No image
                 </div>
               )}
-              <div className="p-3">
+              <div className="p-4">
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-sm font-semibold text-white line-clamp-2">
+                  <h4 className="text-base font-bold text-gray-900 line-clamp-2">
                     {prop.titolo}
                   </h4>
                   {prop.in_evidenza && (
-                    <span className="ml-2 inline-block bg-yellow-500/20 text-yellow-300 text-xs px-2 py-0.5 rounded-full flex-shrink-0">
+                    <span className="ml-2 inline-block bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0.5 rounded-full flex-shrink-0">
                       ★
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 mb-2">{prop.tipo} - {prop.citta}</p>
+                <p className="text-sm text-gray-600 mb-2">{prop.tipo} - {prop.citta}</p>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-blue-400">
+                  <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                     €{prop.prezzo.toLocaleString()}
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-sm text-gray-500">
                     {prop.superficie}m² • {prop.camere} cam
                   </span>
                 </div>
@@ -383,12 +386,19 @@ export default function Home() {
           ))}
         </div>
       </div>
+      </div>
 
       {/* Sezione Come Lavoriamo */}
-      <div ref={comeLavoriamoRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-white">Il Nostro Metodo</h3>
-          <Link to="/come-lavoriamo" className="text-sm text-slate-300 hover:text-white transition-colors">
+      <div className="py-16 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-purple-300 rounded-full blur-3xl"></div>
+        </div>
+      <div ref={comeLavoriamoRef} className={`max-w-7xl mx-auto px-6 relative z-10 transform transition-all duration-[1800ms] ${comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-3xl font-bold text-white">Il Nostro Metodo</h3>
+          <Link to="/come-lavoriamo" className="text-sm text-blue-100 hover:text-white transition-colors duration-300 font-medium">
             Scopri di più →
           </Link>
         </div>
@@ -401,47 +411,49 @@ export default function Home() {
           ].map((item, index) => (
             <div
               key={index}
-              className={`bg-white/5 p-6 rounded-lg transform transition-all duration-1000 hover:bg-white/10 ${
+              className={`backdrop-blur-md bg-white/10 border border-white/20 p-6 rounded-2xl transform transition-all duration-[1800ms] hover:bg-white/20 hover:scale-105 ${
                 comeLavoriamoInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
+              } hover:shadow-2xl hover:shadow-blue-900/50 transition-shadow duration-300`}
               style={{
                 transitionDelay: `${index * 200}ms`
               }}
             >
-              <div className="text-4xl mb-3">{item.icon}</div>
-              <h4 className="text-white font-semibold mb-2">{item.title}</h4>
-              <p className="text-sm text-slate-300">{item.desc}</p>
+              <div className="text-5xl mb-4">{item.icon}</div>
+              <h4 className="text-white font-bold mb-2 text-lg">{item.title}</h4>
+              <p className="text-sm text-blue-100">{item.desc}</p>
             </div>
           ))}
         </div>
       </div>
+      </div>
 
       {/* Sezione Diventa Segnalatore */}
-      <div ref={segnalatorRef} className={`max-w-7xl mx-auto px-6 py-12 transform transition-all duration-1000 ${segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-        <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-8 md:p-12">
+      <div className="py-16" style={{ backgroundColor: '#191919' }}>
+      <div ref={segnalatorRef} className={`max-w-7xl mx-auto px-6 transform transition-all duration-[1800ms] ${segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="bg-gradient-to-br from-orange-500/20 via-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
           <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-white mb-3">Diventa un Segnalatore</h3>
-            <p className="text-slate-300 max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-4">Diventa un Segnalatore</h3>
+            <p className="text-slate-300 max-w-2xl mx-auto text-lg">
               Unisciti alla nostra rete di collaboratori e guadagna commissioni competitive segnalando proprietà
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[
-              { icon: '💰', title: 'Commissioni', desc: 'Guadagni competitivi per ogni segnalazione' },
-              { icon: '🤝', title: 'Supporto', desc: 'Strumenti e assistenza dedicata' },
-              { icon: '⏰', title: 'Flessibilità', desc: 'Lavora nei tuoi tempi' }
+              { icon: '💰', title: 'Commissioni', desc: 'Guadagni competitivi per ogni segnalazione', color: 'from-green-400 to-emerald-600' },
+              { icon: '🤝', title: 'Supporto', desc: 'Strumenti e assistenza dedicata', color: 'from-blue-400 to-cyan-600' },
+              { icon: '⏰', title: 'Flessibilità', desc: 'Lavora nei tuoi tempi', color: 'from-purple-400 to-pink-600' }
             ].map((item, index) => (
               <div
                 key={index}
-                className={`bg-white/5 p-6 rounded-lg text-center transform transition-all duration-1000 ${
+                className={`backdrop-blur-md bg-white/5 border border-white/10 p-6 rounded-2xl text-center transform transition-all duration-[1800ms] hover:bg-white/10 hover:scale-105 ${
                   segnalatorInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
+                } hover:shadow-2xl transition-shadow duration-300`}
                 style={{
                   transitionDelay: `${index * 200}ms`
                 }}
               >
-                <div className="text-3xl mb-2">{item.icon}</div>
-                <h4 className="text-white font-semibold mb-1">{item.title}</h4>
+                <div className={`text-4xl mb-3 bg-gradient-to-r ${item.color} bg-clip-text`}>{item.icon}</div>
+                <h4 className="text-white font-bold mb-2 text-lg">{item.title}</h4>
                 <p className="text-sm text-slate-300">{item.desc}</p>
               </div>
             ))}
@@ -449,17 +461,19 @@ export default function Home() {
           <div className="text-center">
             <Link
               to="/diventa-segnalatore"
-              className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 duration-300"
+              className="inline-block bg-gradient-to-r from-orange-500 to-pink-600 text-white px-10 py-4 rounded-xl font-bold hover:from-orange-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105"
             >
               Inizia Ora
             </Link>
           </div>
         </div>
       </div>
+      </div>
 
       {/* Sezione Contatti */}
-      <div ref={contactRef} className={`max-w-7xl mx-auto px-6 py-12 mb-12 transform transition-all duration-1000 ${contactInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-        <div className="bg-blue-600 text-white p-8 rounded-lg">
+      <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-16">
+      <div ref={contactRef} className={`max-w-7xl mx-auto px-6 mb-12 transform transition-all duration-[1800ms] ${contactInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+        <div className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-8 rounded-3xl shadow-2xl">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl font-bold mb-4 text-center">Contattaci</h2>
             <p className="text-lg mb-8 text-center">
@@ -609,6 +623,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       {/* Modal Proprietà */}

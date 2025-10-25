@@ -68,8 +68,8 @@ export default function AboutMe({ name = 'Angelo Jackowski', title = 'Agente Imm
         >
           <div className="flex justify-center md:justify-start -mt-6 md:-mt-10">
             <div 
-              className={`w-80 h-80 md:w-72 md:h-72 rounded-xl shadow-2xl transform transition-all duration-700 ease-out ${
-                prefersReducedMotion ? '' : imageVisible ? 'scale-100 opacity-100 translate-x-0' : 'scale-95 opacity-0 -translate-x-6'
+              className={`w-80 h-80 md:w-72 md:h-72 rounded-xl shadow-2xl transform transition-all duration-[2000ms] ease-out ${
+                prefersReducedMotion ? '' : imageVisible ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-20'
               }`}
               style={{
                 backgroundImage: `url(${portrait})`,
@@ -86,13 +86,13 @@ export default function AboutMe({ name = 'Angelo Jackowski', title = 'Agente Imm
               }}
             />
           </div>
-          <div className={`text-center md:text-left transition-all duration-500 ${prefersReducedMotion ? 'opacity-100' : textVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+          <div className={`text-center md:text-left transition-all duration-[1400ms] delay-300 ${prefersReducedMotion ? 'opacity-100' : textVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-20'}`}>
             <h3 className="text-3xl font-display mb-2">{name}</h3>
             <p className="text-sm text-slate-500 font-medium mb-4">{title}</p>
             <p className="text-base text-slate-600 leading-relaxed mb-6">{bio || defaultBio}</p>
 
             <div className="flex justify-center md:justify-start">
-              <a href="mailto:info@example.com" className="inline-block px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700">Contattami</a>
+              <a href="mailto:info@example.com" className="inline-block px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition-colors duration-300">Contattami</a>
             </div>
           </div>
         </div>
