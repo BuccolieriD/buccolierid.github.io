@@ -6,6 +6,193 @@ import AboutMe from "../components/AboutMe";
 import supabase from "../lib/supabaseClient";
 import { Link } from "react-router-dom";
 
+// Componente Carousel Testimonianze con scorrimento fluido
+const TestimonialsCarousel = ({ testimonialsInView }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  
+  const testimonials = [
+    {
+      nome: 'Marco Rossi',
+      rating: 5,
+      testo: 'Esperienza fantastica! Ho trovato la casa dei miei sogni in meno di un mese. Il team è stato professionale, disponibile e sempre presente in ogni fase della trattativa.',
+      casa: 'Appartamento a Milano',
+      avatar: '👨‍💼',
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      nome: 'Laura Bianchi',
+      rating: 5,
+      testo: 'Competenza e serietà. Mi hanno seguita passo passo nella vendita della mia proprietà, ottenendo un prezzo superiore alle mie aspettative. Consigliatissimi!',
+      casa: 'Villa venduta a Roma',
+      avatar: '👩‍💼',
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      nome: 'Giuseppe Verdi',
+      rating: 5,
+      testo: 'Professionisti seri e affidabili. Dopo diverse esperienze negative con altre agenzie, finalmente ho trovato chi fa questo lavoro con passione e dedizione.',
+      casa: 'Trilocale a Torino',
+      avatar: '👨‍🦳',
+      color: 'from-orange-500 to-red-500'
+    },
+    {
+      nome: 'Anna Ferrari',
+      rating: 5,
+      testo: 'Servizio impeccabile dall\'inizio alla fine. Hanno gestito ogni aspetto della vendita con grande professionalità. Sono riuscita a vendere in tempi record!',
+      casa: 'Attico a Firenze',
+      avatar: '👩',
+      color: 'from-green-500 to-teal-500'
+    },
+    {
+      nome: 'Luca Moretti',
+      rating: 5,
+      testo: 'Consiglio vivamente! Massima trasparenza, nessuna sorpresa. Mi hanno aiutato a trovare esattamente quello che cercavo nel mio budget.',
+      casa: 'Villa a Napoli',
+      avatar: '👨',
+      color: 'from-indigo-500 to-blue-500'
+    },
+    {
+      nome: 'Sofia Romano',
+      rating: 5,
+      testo: 'Esperienza eccellente. Molto competenti e pazienti, hanno risposto a tutte le mie domande e mi hanno guidata in ogni passo. Altamente raccomandati!',
+      casa: 'Bilocale a Bologna',
+      avatar: '👩‍🦰',
+      color: 'from-pink-500 to-rose-500'
+    },
+  ];
+
+  // Calcola il numero di card visibili in base alla larghezza dello schermo
+  const getVisibleCards = () => {
+    return window.innerWidth < 768 ? 1 : 3;
+  };
+
+  // Calcola il massimo indice possibile
+  const getMaxIndex = () => {
+    const visibleCards = getVisibleCards();
+    return testimonials.length - visibleCards;
+  };
+
+  const nextSlide = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    const maxIndex = getMaxIndex();
+    setCurrentIndex((prev) => {
+      // Se siamo all'ultimo gruppo possibile, torna a 0
+      if (prev >= maxIndex) return 0;
+      return prev + 1;
+    });
+    setTimeout(() => setIsTransitioning(false), 500);
+  };
+
+  const prevSlide = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    const maxIndex = getMaxIndex();
+    setCurrentIndex((prev) => {
+      // Se siamo a 0, vai all'ultimo gruppo possibile
+      if (prev <= 0) return maxIndex;
+      return prev - 1;
+    });
+    setTimeout(() => setIsTransitioning(false), 500);
+  };
+
+  const TestimonialCard = ({ testimonial }) => (
+    <div className="flex-shrink-0 w-full md:w-1/3 px-2 md:px-4">
+      <div className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:scale-105 h-full mx-auto max-w-sm md:max-w-none">
+        {/* Avatar e Nome */}
+        <div className="flex items-center mb-4">
+          <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br ${testimonial.color} flex items-center justify-center text-2xl md:text-3xl shadow-lg flex-shrink-0`}>
+            {testimonial.avatar}
+          </div>
+          <div className="ml-3 md:ml-4 min-w-0">
+            <h4 className="font-bold text-gray-900 text-base md:text-lg truncate">{testimonial.nome}</h4>
+            <p className="text-xs md:text-sm text-gray-600 truncate">{testimonial.casa}</p>
+          </div>
+        </div>
+
+        {/* Rating Stelle */}
+        <div className="flex mb-4">
+          {[...Array(testimonial.rating)].map((_, i) => (
+            <svg key={i} className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+            </svg>
+          ))}
+        </div>
+
+        {/* Testo Testimonianza */}
+        <p className="text-gray-700 text-sm md:text-base leading-relaxed italic mb-4">
+          "{testimonial.testo}"
+        </p>
+
+        {/* Decorazione */}
+        <div className={`h-1 w-16 bg-gradient-to-r ${testimonial.color} rounded-full`}></div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="relative px-8 md:px-12">
+      {/* Bottoni navigazione */}
+      <button
+        onClick={prevSlide}
+        disabled={isTransitioning}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full p-2 md:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 text-gray-700 hover:text-blue-600 disabled:opacity-50"
+        aria-label="Precedente"
+      >
+        <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        onClick={nextSlide}
+        disabled={isTransitioning}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white rounded-full p-2 md:p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 text-gray-700 hover:text-blue-600 disabled:opacity-50"
+        aria-label="Successivo"
+      >
+        <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Carousel Container */}
+      <div className="overflow-hidden">
+        <div 
+          className="flex transition-transform duration-500 ease-out"
+          style={{
+            transform: `translateX(-${currentIndex * (100 / (window.innerWidth < 768 ? 1 : 3))}%)`
+          }}
+        >
+          {testimonials.map((testimonial, index) => (
+            <TestimonialCard key={index} testimonial={testimonial} />
+          ))}
+        </div>
+      </div>
+
+      {/* Indicatori */}
+      <div className="flex justify-center gap-2 mt-8">
+        {Array.from({ length: getMaxIndex() + 1 }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              if (!isTransitioning) {
+                setIsTransitioning(true);
+                setCurrentIndex(index);
+                setTimeout(() => setIsTransitioning(false), 500);
+              }
+            }}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              index === currentIndex ? 'w-8 bg-blue-600' : 'w-2 bg-gray-300 hover:bg-gray-400'
+            }`}
+            aria-label={`Vai al gruppo ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default function Home() {
   const [preview, setPreview] = useState([]);
   const [properties, setProperties] = useState([]);
@@ -17,6 +204,7 @@ export default function Home() {
   const propertiesRef = useRef(null);
   const comeLavoriamoRef = useRef(null);
   const segnalatorRef = useRef(null);
+  const testimonialsRef = useRef(null);
   const contactRef = useRef(null);
   
   // start hidden so the entrance transition runs on initial page load
@@ -25,6 +213,7 @@ export default function Home() {
   const [propertiesInView, setPropertiesInView] = useState(false);
   const [comeLavoriamoInView, setComeLavoriamoInView] = useState(false);
   const [segnalatorInView, setSegnalatorInView] = useState(false);
+  const [testimonialsInView, setTestimonialsInView] = useState(false);
   const [contactInView, setContactInView] = useState(false);
   const [logoAnimate, setLogoAnimate] = useState(false);
 
@@ -121,7 +310,12 @@ export default function Home() {
     if (heroEl) {
       const hObs = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => setHeroInView(entry.isIntersecting));
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setHeroInView(true);
+              hObs.disconnect(); // Disconnetti dopo la prima apparizione
+            }
+          });
         },
         { threshold: 0.05 }
       );
@@ -138,6 +332,7 @@ export default function Home() {
       { ref: propertiesRef, setter: setPropertiesInView },
       { ref: comeLavoriamoRef, setter: setComeLavoriamoInView },
       { ref: segnalatorRef, setter: setSegnalatorInView },
+      { ref: testimonialsRef, setter: setTestimonialsInView },
       { ref: contactRef, setter: setContactInView }
     ];
 
@@ -146,7 +341,12 @@ export default function Home() {
       if (el) {
         const obs = new IntersectionObserver(
           (entries) => {
-            entries.forEach((entry) => setter(entry.isIntersecting));
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                setter(true); // Imposta a true
+                obs.disconnect(); // Disconnetti dopo la prima apparizione
+              }
+            });
           },
           { threshold: 0.12 }
         );
@@ -468,6 +668,41 @@ export default function Home() {
           </div>
         </div>
       </div>
+      </div>
+
+      {/* Sezione Testimonianze */}
+      <div className="bg-white py-16">
+        <div ref={testimonialsRef} className={`max-w-7xl mx-auto px-6 transform transition-all duration-[1800ms] ${testimonialsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+              Cosa Dicono i Nostri Clienti
+            </h2>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+              Le testimonianze di chi ha trovato casa con noi parlano chiaro: professionalità, affidabilità e risultati
+            </p>
+          </div>
+
+          {/* Carousel Testimonianze */}
+          <TestimonialsCarousel testimonialsInView={testimonialsInView} />
+
+          {/* Statistiche */}
+          <div className={`mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 transform transition-all duration-[1800ms] delay-600 ${testimonialsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            {[
+              { numero: '500+', label: 'Clienti Soddisfatti', icon: '😊' },
+              { numero: '4.9/5', label: 'Rating Medio', icon: '⭐' },
+              { numero: '98%', label: 'Vendite Concluse', icon: '🏆' },
+              { numero: '15+', label: 'Anni Esperienza', icon: '📅' }
+            ].map((stat, index) => (
+              <div key={index} className="text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="text-4xl mb-2">{stat.icon}</div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1">
+                  {stat.numero}
+                </div>
+                <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Sezione Contatti */}

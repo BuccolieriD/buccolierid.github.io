@@ -55,6 +55,7 @@ const ComeLavoriamo = () => {
           ([entry]) => {
             if (entry.isIntersecting) {
               setVisibleSections(prev => ({ ...prev, [key]: true }));
+              observers[key].disconnect(); // Disconnetti dopo la prima apparizione
             }
           },
           { threshold: 0.2 }

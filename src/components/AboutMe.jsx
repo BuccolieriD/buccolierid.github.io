@@ -29,15 +29,7 @@ export default function AboutMe({ name = 'Angelo Jackowski', title = 'Agente Imm
               setImageVisible(true);
               timers.current.push(setTimeout(() => setTextVisible(true), 160));
             }
-          } else {
-            // leaving viewport -> reset so animation can replay next time
-            setInView(false);
-            if (!prefersReduced) {
-              setImageVisible(false);
-              setTextVisible(false);
-              timers.current.forEach((t) => clearTimeout(t));
-              timers.current = [];
-            }
+            obs.disconnect(); // Disconnetti dopo la prima apparizione
           }
         });
       },

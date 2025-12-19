@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
+import InstallPWA from './components/InstallPWA';
 import Home from './pages/Home';
 import About from './pages/About';
 import CounterPage from './pages/CounterPage';
@@ -15,9 +16,10 @@ import ProprietaVendita from './pages/ProprietaVendita';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
       {/* <NavBar /> */}
-      <main className="  ">
+      <InstallPWA />
+      <main className="flex-1 w-full overflow-x-hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
